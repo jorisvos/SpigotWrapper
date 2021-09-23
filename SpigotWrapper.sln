@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpigotWrapper", "SpigotWrapper\SpigotWrapper.csproj", "{9235843F-BCD7-4863-8CF0-DF99DE34833D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpigotWrapperLib", "SpigotWrapperLib\SpigotWrapperLib.csproj", "{A15F0377-E75C-48DD-B402-E32A5BE87684}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9235843F-BCD7-4863-8CF0-DF99DE34833D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9235843F-BCD7-4863-8CF0-DF99DE34833D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9235843F-BCD7-4863-8CF0-DF99DE34833D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9235843F-BCD7-4863-8CF0-DF99DE34833D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A15F0377-E75C-48DD-B402-E32A5BE87684}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A15F0377-E75C-48DD-B402-E32A5BE87684}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A15F0377-E75C-48DD-B402-E32A5BE87684}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A15F0377-E75C-48DD-B402-E32A5BE87684}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
