@@ -2,6 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpigotWrapperLib", "SpigotWrapperLib\SpigotWrapperLib.csproj", "{A15F0377-E75C-48DD-B402-E32A5BE87684}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{78C16A29-771D-40F1-899F-F44D87B5591A}"
+ProjectSection(SolutionItems) = preProject
+	DbCreationScript.sql = data\DbCreationScript.sql
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpigotWrapper", "SpigotWrapper\SpigotWrapper.csproj", "{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +19,9 @@ Global
 		{A15F0377-E75C-48DD-B402-E32A5BE87684}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A15F0377-E75C-48DD-B402-E32A5BE87684}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A15F0377-E75C-48DD-B402-E32A5BE87684}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
