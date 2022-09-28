@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
 using SpigotWrapper.Config;
+using SpigotWrapper.Extensions;
 using SpigotWrapper.Models;
 using SpigotWrapper.Repositories.Jars;
 using SpigotWrapperLib;
@@ -18,11 +19,12 @@ namespace SpigotWrapper.Services.Jars
     {
         public static readonly string JarPath = Path.Combine(Main.RootPath, "jars");
         private readonly IJarRepository _jarRepository;
+        private readonly Logger _logger;
 
         public JarService(IJarRepository jarRepository)
         {
             _jarRepository = jarRepository;
-            Directory.CreateDirectory(JarPath);
+            _logger = new Logger(GetType().Name);
         }
 
         public async Task<IEnumerable<Jar>> GetAll()
@@ -41,6 +43,7 @@ namespace SpigotWrapper.Services.Jars
 
             await using var stream = File.Create(filePath);
             await file.CopyToAsync(stream);
+            _logger.Info($"Added {jar.JarKind} ({jar.MinecraftVersion})");
 
             return uploadedJar;
         }
@@ -50,11 +53,13 @@ namespace SpigotWrapper.Services.Jars
             return await _jarRepository.Get(id);
         }
 
+        // TODO: check for Server with this Jar before deleting
         public async Task Remove(Guid id)
         {
             var jar = await _jarRepository.Get(id);
             await _jarRepository.Remove(id);
             File.Delete(Path.Combine(JarPath, jar.FileName));
+            _logger.Info($"Removed {jar.JarKind} ({jar.MinecraftVersion})");
         }
 
         public async Task<Jar> DownloadLatest()
@@ -84,9 +89,9 @@ namespace SpigotWrapper.Services.Jars
             var jar = new Jar { FileName = jarFileName, JarKind = jarKind, MinecraftVersion = minecraftVersion };
             await CheckForUniqueConstraints(jar);
 
-            using var client = new WebClient();
-            await client.DownloadFileTaskAsync(new Uri(jarDownloadUrl), Path.Combine(JarPath, jarFileName));
-            Logger.Log($"JarService: Downloaded {jarKind} ({minecraftVersion})");
+            using var httpClient = new HttpClient();
+            await httpClient.DownloadFileTaskAsync(new Uri(jarDownloadUrl), Path.Combine(JarPath, jarFileName));
+            _logger.Info($"Downloaded {jarKind} ({minecraftVersion})");
 
             return await _jarRepository.Add(jar);
         }
@@ -101,9 +106,16 @@ namespace SpigotWrapper.Services.Jars
         {
             var jars = (await _jarRepository.All()).ToArray();
             if (jars.Any(j => j.FileName == jar.FileName))
+            {
+                _logger.Error("The jar filename must be unique.");
                 throw new Exception("The jar filename must be unique.");
+            }
+
             if (jars.Any(j => j.JarKind == jar.JarKind && j.MinecraftVersion == jar.MinecraftVersion))
+            {
+                _logger.Error("The jar kind and minecraft version must be unique.");
                 throw new Exception("The jar kind and minecraft version together must be unique.");
+            }
         }
     }
 }

@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SpigotWrapper.Config.Mapping;
 using SpigotWrapper.Models;
 using SpigotWrapper.Postgres;
@@ -17,6 +15,7 @@ using SpigotWrapper.Repositories.Servers;
 using SpigotWrapper.Repositories.SpigotWrapperSettings;
 using SpigotWrapper.Services.Jars;
 using SpigotWrapperLib;
+using SpigotWrapperLib.Log;
 using SpigotWrapperLib.Server;
 
 namespace SpigotWrapper.Services.Servers
@@ -25,12 +24,12 @@ namespace SpigotWrapper.Services.Servers
     {
         public static readonly string ServerPath = Path.Combine(Main.RootPath, "servers");
         private readonly IJarService _jarService;
-        private readonly ILogger<ServerService> _logger;
         private readonly IMapper _mapper;
         private readonly ISpigotWrapperSettingsRepository _spigotWrapperRepository;
         private readonly IPluginRepository _pluginRepository;
         private readonly IPluginServerRepository _pluginServerRepository;
         private readonly IServerRepository _serverRepository;
+        private readonly Logger _logger;
 
         static ServerService()
         {
@@ -41,7 +40,7 @@ namespace SpigotWrapper.Services.Servers
             collection.AddTransient<IPluginServerRepository, PluginServerRepository>();
             collection.AddTransient<IJarRepository, JarRepository>();
             collection.AddTransient<IJarService, JarService>();
-            collection.AddTransient(p => PostgresConnectionFactory.CreatePostgresConnection(new PostgresOptions
+            collection.AddTransient(_ => PostgresConnectionFactory.CreatePostgresConnection(new PostgresOptions
             {
                 ConnectionString = Startup.Configuration.GetSection("Postgres")["ConnectionString"]
             }));
@@ -55,18 +54,18 @@ namespace SpigotWrapper.Services.Servers
             var mapper = service.GetService<IMapper>();
             var jarService = service.GetService<IJarService>();
 
-            var servers = serverRepository.All().GetAwaiter().GetResult();
+            var servers = serverRepository!.All().GetAwaiter().GetResult();
             var libServers = new List<Wrapper>();
-            if (servers.Any())
+            if ((servers ?? Array.Empty<Server>()).Any())
             {
-                var javaExecutable = spigotWrapperRepository.Get("JavaExecutable").GetAwaiter().GetResult().Value;
-                foreach (var server in servers)
+                var javaExecutable = spigotWrapperRepository!.Get("JavaExecutable").GetAwaiter().GetResult().Value;
+                foreach (var server in servers!)
                 {
                     EnrichWithEnabledPlugins(server, pluginRepository, pluginServerRepository).GetAwaiter();
-                    var libServer = mapper.Map<Server, Wrapper>(server);
+                    var libServer = mapper!.Map<Server, Wrapper>(server);
                     libServer.ServerPath = Path.Combine(ServerPath, libServer.Id.ToString());
                     libServer.JavaExecutable = javaExecutable;
-                    libServer.JarFilePath = jarService.GetJarPath(server.JarFile).GetAwaiter().GetResult();
+                    libServer.JarFilePath = jarService!.GetJarPath(server.JarFile).GetAwaiter().GetResult();
                     libServers.Add(libServer);
                 }
             }
@@ -79,8 +78,7 @@ namespace SpigotWrapper.Services.Servers
             IPluginServerRepository pluginServerRepository,
             ISpigotWrapperSettingsRepository spigotWrapperRepository,
             IJarService jarService,
-            IMapper mapper,
-            ILogger<ServerService> logger)
+            IMapper mapper)
         {
             _serverRepository = serverRepository;
             _pluginRepository = pluginRepository;
@@ -88,7 +86,7 @@ namespace SpigotWrapper.Services.Servers
             _spigotWrapperRepository = spigotWrapperRepository;
             _jarService = jarService;
             _mapper = mapper;
-            _logger = logger;
+            _logger = new Logger(GetType().Name);
         }
 
         public static ServerManager ServerManager { get; }
@@ -105,9 +103,16 @@ namespace SpigotWrapper.Services.Servers
             var servers = await _serverRepository.All();
             var jars = await _jarService.GetAll();
             if (servers.Any(s => s.Name == server.Name))
+            {
+                _logger.Error("The plugin name and filename must be unique.");
                 throw new Exception("The name of the server must be unique.");
+            }
+
             if (jars.All(j => j.Id != server.JarFile))
+            {
+                _logger.Error("That jar does not exist.");
                 throw new Exception("That jar file does not exist.");
+            }
 
             var createdServer = await _serverRepository.Add(server);
             var libServer = _mapper.Map<Server, Wrapper>(createdServer);
@@ -121,14 +126,19 @@ namespace SpigotWrapper.Services.Servers
 
                 var result = ServerManager.CreateServer(libServer);
                 if (result)
+                {
+                    _logger.Info($"Added new server: {createdServer.Name}");
                     return createdServer;
+                }
 
                 await _serverRepository.Remove(createdServer.Id);
+                _logger.Error($"An error occured whilst adding a new Server. Contact creator of SpigotWrapper!");
                 throw new Exception("ERROR: CONTACT CREATOR OF SpigotWrapper!");
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 await _serverRepository.Remove(createdServer.Id);
+                _logger.Error(exception);
                 throw new Exception("ERROR: There was no JavaExecutable setting found in the database.");
             }
         }
@@ -145,15 +155,23 @@ namespace SpigotWrapper.Services.Servers
         {
             var server = await _serverRepository.Get(id);
             if (server == null)
+            {
+                _logger.Error("A server with that id cannot be found.");
                 throw new Exception("A server with that id cannot be found.");
+            }
+
             var serverPath = Path.Combine(ServerPath, server.Id.ToString());
 
             var deleted = ServerManager.Instance.DeleteServer(id);
             if (!deleted)
+            {
+                _logger.Error("A server with that id cannot be found.");
                 throw new Exception("A server with that id cannot be found.");
+            }
 
-            Directory.Delete(serverPath, true);
             await _serverRepository.Remove(id);
+            Directory.Delete(serverPath, true);
+            _logger.Info($"Removed server: {server.Name}");
         }
 
         private static async Task EnrichWithEnabledPlugins(Server server, IPluginRepository pluginRepository,

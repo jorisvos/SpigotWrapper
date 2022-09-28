@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using SpigotWrapper.Models;
 using SpigotWrapper.Repositories.Plugins;
 using SpigotWrapperLib;
+using SpigotWrapperLib.Log;
 
 namespace SpigotWrapper.Services.Plugins
 {
@@ -14,10 +15,12 @@ namespace SpigotWrapper.Services.Plugins
     {
         public static readonly string PluginPath = Path.Combine(Main.RootPath, "plugins");
         private readonly IPluginRepository _pluginRepository;
+        private readonly Logger _logger;
 
         public PluginService(IPluginRepository pluginRepository)
         {
             _pluginRepository = pluginRepository;
+            _logger = new Logger(GetType().Name);
         }
 
         public async Task<IEnumerable<Plugin>> GetAll()
@@ -31,7 +34,10 @@ namespace SpigotWrapper.Services.Plugins
 
             var plugins = await _pluginRepository.All();
             if (plugins.Any(p => p.Name == plugin.Name || p.FileName == plugin.FileName))
+            {
+                _logger.Error("The plugin name and filename must be unique.");
                 throw new Exception("The plugin name and filename must be unique.");
+            }
 
             var uploadedPlugin = await _pluginRepository.Add(plugin);
 
@@ -39,6 +45,7 @@ namespace SpigotWrapper.Services.Plugins
 
             await using var stream = File.Create(filePath);
             await file.CopyToAsync(stream);
+            _logger.Info($"Added {plugin.FileName} ({plugin.Version})");
 
             return uploadedPlugin;
         }
@@ -51,6 +58,7 @@ namespace SpigotWrapper.Services.Plugins
         public async Task Remove(Guid id)
         {
             await _pluginRepository.Remove(id);
+            _logger.Info($"Removed {id})");
         }
     }
 }

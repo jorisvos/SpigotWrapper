@@ -78,8 +78,8 @@ namespace SpigotWrapperLib.Server
             
             _server.OutputDataReceived += ReadMessage;
             _server.ErrorDataReceived += ReadMessage;
-            _server.ErrorDataReceived += (_, args) => { if (args?.Data != null) Log(args.Data); };
-            _server.Exited += (_, _) => Log("Server Stopped!", true);
+            _server.ErrorDataReceived += (_, args) => { if (args.Data != null) Log(args.Data); };
+            _server.Exited += (_, _) => Log("Server Stopped!");
             _server.Exited += minecraftConnector.TriggerServerStopped;
 
             Log($"Starting server with arguments: {_server.StartInfo.Arguments}");
@@ -98,6 +98,14 @@ namespace SpigotWrapperLib.Server
             if (_server is null or {HasExited: true})
                 return false;
             WriteLine("stop");
+            return true;
+        }
+
+        public bool Kill()
+        {
+            if (_server is null or {HasExited: true})
+                return false;
+            _server.Kill();
             return true;
         }
         

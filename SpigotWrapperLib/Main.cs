@@ -5,7 +5,7 @@ using SpigotWrapperLib.Plugin;
 
 namespace SpigotWrapperLib
 {
-    public class Main
+    public static class Main
     {
         public static string RootPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SpigotWrapper");
 
@@ -15,7 +15,7 @@ namespace SpigotWrapperLib
             Backup.BackupLogs();
         }
         
-        public static void CreateDirectories()
+        private static void CreateDirectories()
         {
             Directory.CreateDirectory(RootPath);
             Directory.CreateDirectory(Logger.LogPath);

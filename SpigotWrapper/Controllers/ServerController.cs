@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SpigotWrapper.Models;
 using SpigotWrapper.Services.Servers;
 using SpigotWrapperLib.Log;
@@ -16,13 +15,11 @@ namespace SpigotWrapper.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class ServerController : ControllerBase
     {
-        private readonly ILogger<ServerController> _logger;
         private readonly IServerService _serverService;
 
-        public ServerController(IServerService serverService, ILogger<ServerController> logger)
+        public ServerController(IServerService serverService)
         {
             _serverService = serverService ?? throw new ArgumentNullException(nameof(serverService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         #region ServerManager operations
@@ -33,6 +30,15 @@ namespace SpigotWrapper.Controllers
         public ActionResult StopAll()
         {
             ServerService.ServerManager.StopAll();
+            return NoContent();
+        }
+        
+        [HttpGet("killall")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult KillAll()
+        {
+            ServerService.ServerManager.KillAll();
             return NoContent();
         }
 
@@ -83,6 +89,14 @@ namespace SpigotWrapper.Controllers
         public ActionResult<bool> Stop(Guid id)
         {
             return ServerService.ServerManager.StopServer(id);
+        }
+        
+        [HttpGet("{id:guid}/kill")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<bool> Kill(Guid id)
+        {
+            return ServerService.ServerManager.KillServer(id);
         }
 
         [HttpGet("{id:guid}/accepteula")]
@@ -173,7 +187,7 @@ namespace SpigotWrapper.Controllers
             try
             {
                 if (server.JavaArguments == null)
-                    server.JavaArguments = "-jar -Xmx128M -Xms128M %jar% nogui";
+                    server.JavaArguments = "-jar -Xms128M -Xmx1G %jar% nogui";
                 var createdServer = await _serverService.Add(server);
 
                 return CreatedAtAction("GetById",

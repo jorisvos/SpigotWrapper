@@ -86,8 +86,12 @@ namespace SpigotWrapperLib.Server
             => _wrappers.FirstOrDefault(server => server.Id == id)?.Start() ?? false;
         public bool StopServer(Guid id)
             => _wrappers.FirstOrDefault(server => server.Id == id)?.Stop(null, null) ?? false;
+        public bool KillServer(Guid id)
+            => _wrappers.FirstOrDefault(server => server.Id == id)?.Kill() ?? false;
         public void StopAll()
             => _wrappers.ForEach(server => server.Stop(null, null));
+        public void KillAll()
+            => _wrappers.ForEach(server => server.Kill());
         public bool ExecuteCommand(Guid id, string command)
             => _wrappers.FirstOrDefault(server => server.Id == id)?.WriteLine(command) ?? false;
         public string LatestMinecraftLog(Guid id)

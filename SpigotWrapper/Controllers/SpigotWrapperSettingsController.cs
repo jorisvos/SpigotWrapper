@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SpigotWrapper.Models;
 using SpigotWrapper.Services.SpigotWrapperSettings;
 
@@ -14,15 +13,12 @@ namespace SpigotWrapper.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class SpigotWrapperSettingsController : ControllerBase
     {
-        private readonly ILogger<SpigotWrapperSettingsController> _logger;
         private readonly ISpigotWrapperSettingsService _spigotWrapperSettingsService;
 
-        public SpigotWrapperSettingsController(ISpigotWrapperSettingsService spigotWrapperSettingsService,
-            ILogger<SpigotWrapperSettingsController> logger)
+        public SpigotWrapperSettingsController(ISpigotWrapperSettingsService spigotWrapperSettingsService)
         {
             _spigotWrapperSettingsService = spigotWrapperSettingsService ??
                                             throw new ArgumentNullException(nameof(spigotWrapperSettingsService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]

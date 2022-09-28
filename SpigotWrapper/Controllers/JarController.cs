@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SpigotWrapper.Models;
 using SpigotWrapper.Services.Jars;
 using SpigotWrapper.ViewModels;
@@ -16,12 +15,10 @@ namespace SpigotWrapper.Controllers
     public class JarController : ControllerBase
     {
         private readonly IJarService _jarService;
-        private readonly ILogger<JarController> _logger;
 
-        public JarController(IJarService jarService, ILogger<JarController> logger)
+        public JarController(IJarService jarService)
         {
             _jarService = jarService ?? throw new ArgumentNullException(nameof(jarService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
