@@ -7,9 +7,9 @@ namespace SpigotWrapper.Repositories.SpigotWrapperSettings
     public interface ISpigotWrapperSettingsRepository
     {
         Task<IEnumerable<SpigotWrapperSetting>> All();
-        Task<SpigotWrapperSetting> Add(SpigotWrapperSetting mcWrapperSetting);
+        Task<SpigotWrapperSetting> Add(SpigotWrapperSetting spigotWrapperSetting);
         Task<SpigotWrapperSetting> Get(string key);
-        Task<SpigotWrapperSetting> Update(SpigotWrapperSetting mcWrapperSetting);
+        Task<SpigotWrapperSetting> Update(SpigotWrapperSetting spigotWrapperSetting);
         Task Remove(string key);
     }
 }

@@ -7,8 +7,8 @@ namespace SpigotWrapper.Services.SpigotWrapperSettings
     public interface ISpigotWrapperSettingsService
     {
         Task<IEnumerable<SpigotWrapperSetting>> GetAll();
-        Task<SpigotWrapperSetting> Add(SpigotWrapperSetting mcWrapper);
-        Task<SpigotWrapperSetting> Update(SpigotWrapperSetting mcWrapper);
+        Task<SpigotWrapperSetting> Add(SpigotWrapperSetting spigotWrapper);
+        Task<SpigotWrapperSetting> Update(SpigotWrapperSetting spigotWrapper);
         Task<SpigotWrapperSetting> Get(string key);
         Task Remove(string key);
     }

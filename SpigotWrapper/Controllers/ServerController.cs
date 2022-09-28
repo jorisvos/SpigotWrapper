@@ -48,9 +48,9 @@ namespace SpigotWrapper.Controllers
         [HttpGet("log")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public FileStreamResult McWrapperLog()
+        public FileStreamResult SpigotWrapperLog()
         {
-            return new(System.IO.File.OpenRead(Logger.LatestLog), "application/octet-stream");
+            return new FileStreamResult(System.IO.File.OpenRead(Logger.LatestLog), "application/octet-stream");
         }
 
         [HttpGet("info")]
@@ -172,6 +172,8 @@ namespace SpigotWrapper.Controllers
         {
             try
             {
+                if (server.JavaArguments == null)
+                    server.JavaArguments = "-jar -Xmx128M -Xms128M %jar% nogui";
                 var createdServer = await _serverService.Add(server);
 
                 return CreatedAtAction("GetById",

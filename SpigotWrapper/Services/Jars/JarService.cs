@@ -22,6 +22,7 @@ namespace SpigotWrapper.Services.Jars
         public JarService(IJarRepository jarRepository)
         {
             _jarRepository = jarRepository;
+            Directory.CreateDirectory(JarPath);
         }
 
         public async Task<IEnumerable<Jar>> GetAll()
