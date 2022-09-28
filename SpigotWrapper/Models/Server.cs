@@ -11,7 +11,7 @@ namespace SpigotWrapper.Models
 
         [Required] public Guid JarFile { get; set; }
 
-        [Required] public string JavaArguments { get; set; }
+        public string JavaArguments { get; set; }
 
         [Required] public bool EnablePlugins { get; set; }
 

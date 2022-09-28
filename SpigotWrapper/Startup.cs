@@ -1,3 +1,4 @@
+using System.IO;
 using System.IO.Compression;
 using System.Text.Json.Serialization;
 using Dapper;
@@ -49,11 +50,10 @@ namespace SpigotWrapper
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddJsonOptions(options =>
                 {
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 })
-                .AddControllersAsServices()
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+                .AddControllersAsServices();
 
             services.Configure<PostgresOptions>(Configuration.GetSection("Postgres"));
 
@@ -126,6 +126,14 @@ namespace SpigotWrapper
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             Main.Initialize();
+            CreateDirectories();
+        }
+        
+        public static void CreateDirectories()
+        {
+            Directory.CreateDirectory(JarService.JarPath);
+            Directory.CreateDirectory(ServerService.ServerPath);
+            Directory.CreateDirectory(PluginService.PluginPath);
         }
     }
 }

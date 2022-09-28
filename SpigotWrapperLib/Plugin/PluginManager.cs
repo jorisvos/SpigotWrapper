@@ -14,7 +14,7 @@ namespace SpigotWrapperLib.Plugin
 
         private readonly Wrapper _wrapper;
         
-        public PluginManager(Server.Wrapper wrapper, string[] enabledPlugins)
+        public PluginManager(Wrapper wrapper, string[] enabledPlugins)
         {
             _wrapper = wrapper;
             Plugins = new List<ISpigotWrapperPlugin>();

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SpigotWrapper.Models;
 using SpigotWrapper.Services.Plugins;
 
@@ -14,13 +13,11 @@ namespace SpigotWrapper.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class PluginController : ControllerBase
     {
-        private readonly ILogger<PluginController> _logger;
         private readonly IPluginService _pluginService;
 
-        public PluginController(IPluginService pluginService, ILogger<PluginController> logger)
+        public PluginController(IPluginService pluginService)
         {
             _pluginService = pluginService ?? throw new ArgumentNullException(nameof(pluginService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
