@@ -9,40 +9,40 @@ namespace SpigotWrapper.Services.SpigotWrapperSettings
 {
     public class SpigotWrapperSettingsService : ISpigotWrapperSettingsService
     {
-        private readonly ISpigotWrapperSettingsRepository _mcWrapperRepository;
+        private readonly ISpigotWrapperSettingsRepository _spigotWrapperRepository;
 
-        public SpigotWrapperSettingsService(ISpigotWrapperSettingsRepository mcWrapperRepository)
+        public SpigotWrapperSettingsService(ISpigotWrapperSettingsRepository spigotWrapperRepository)
         {
-            _mcWrapperRepository = mcWrapperRepository;
+            _spigotWrapperRepository = spigotWrapperRepository;
         }
 
         public async Task<IEnumerable<SpigotWrapperSetting>> GetAll()
         {
-            return await _mcWrapperRepository.All();
+            return await _spigotWrapperRepository.All();
         }
 
-        public async Task<SpigotWrapperSetting> Add(SpigotWrapperSetting mcWrapper)
+        public async Task<SpigotWrapperSetting> Add(SpigotWrapperSetting spigotWrapper)
         {
-            var mcWrapperSettings = await _mcWrapperRepository.All();
-            if (mcWrapperSettings.Any(m => m.Key == mcWrapper.Key))
+            var spigotWrapperSettings = await _spigotWrapperRepository.All();
+            if (spigotWrapperSettings.Any(m => m.Key == spigotWrapper.Key))
                 throw new Exception("You can't have settings with the same key.");
 
-            return await _mcWrapperRepository.Add(mcWrapper);
+            return await _spigotWrapperRepository.Add(spigotWrapper);
         }
 
-        public async Task<SpigotWrapperSetting> Update(SpigotWrapperSetting mcWrapper)
+        public async Task<SpigotWrapperSetting> Update(SpigotWrapperSetting spigotWrapper)
         {
-            return await _mcWrapperRepository.Update(mcWrapper);
+            return await _spigotWrapperRepository.Update(spigotWrapper);
         }
 
         public async Task<SpigotWrapperSetting> Get(string key)
         {
-            return await _mcWrapperRepository.Get(key);
+            return await _spigotWrapperRepository.Get(key);
         }
 
         public async Task Remove(string key)
         {
-            await _mcWrapperRepository.Remove(key);
+            await _spigotWrapperRepository.Remove(key);
         }
     }
 }

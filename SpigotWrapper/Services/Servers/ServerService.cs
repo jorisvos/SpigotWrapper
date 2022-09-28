@@ -27,7 +27,7 @@ namespace SpigotWrapper.Services.Servers
         private readonly IJarService _jarService;
         private readonly ILogger<ServerService> _logger;
         private readonly IMapper _mapper;
-        private readonly ISpigotWrapperSettingsRepository _mcWrapperRepository;
+        private readonly ISpigotWrapperSettingsRepository _spigotWrapperRepository;
         private readonly IPluginRepository _pluginRepository;
         private readonly IPluginServerRepository _pluginServerRepository;
         private readonly IServerRepository _serverRepository;
@@ -49,7 +49,7 @@ namespace SpigotWrapper.Services.Servers
 
             var service = collection.BuildServiceProvider();
             var serverRepository = service.GetService<IServerRepository>();
-            var mcWrapperRepository = service.GetService<ISpigotWrapperSettingsRepository>();
+            var spigotWrapperRepository = service.GetService<ISpigotWrapperSettingsRepository>();
             var pluginRepository = service.GetService<IPluginRepository>();
             var pluginServerRepository = service.GetService<IPluginServerRepository>();
             var mapper = service.GetService<IMapper>();
@@ -59,7 +59,7 @@ namespace SpigotWrapper.Services.Servers
             var libServers = new List<Wrapper>();
             if (servers.Any())
             {
-                var javaExecutable = mcWrapperRepository.Get("JavaExecutable").GetAwaiter().GetResult().Value;
+                var javaExecutable = spigotWrapperRepository.Get("JavaExecutable").GetAwaiter().GetResult().Value;
                 foreach (var server in servers)
                 {
                     EnrichWithEnabledPlugins(server, pluginRepository, pluginServerRepository).GetAwaiter();
@@ -77,7 +77,7 @@ namespace SpigotWrapper.Services.Servers
         public ServerService(IServerRepository serverRepository,
             IPluginRepository pluginRepository,
             IPluginServerRepository pluginServerRepository,
-            ISpigotWrapperSettingsRepository mcWrapperRepository,
+            ISpigotWrapperSettingsRepository spigotWrapperRepository,
             IJarService jarService,
             IMapper mapper,
             ILogger<ServerService> logger)
@@ -85,7 +85,7 @@ namespace SpigotWrapper.Services.Servers
             _serverRepository = serverRepository;
             _pluginRepository = pluginRepository;
             _pluginServerRepository = pluginServerRepository;
-            _mcWrapperRepository = mcWrapperRepository;
+            _spigotWrapperRepository = spigotWrapperRepository;
             _jarService = jarService;
             _mapper = mapper;
             _logger = logger;
@@ -116,7 +116,7 @@ namespace SpigotWrapper.Services.Servers
 
             try
             {
-                var javaExecutable = (await _mcWrapperRepository.Get("JavaExecutable")).Value;
+                var javaExecutable = (await _spigotWrapperRepository.Get("JavaExecutable")).Value;
                 libServer.JavaExecutable = javaExecutable;
 
                 var result = ServerManager.CreateServer(libServer);
@@ -124,7 +124,7 @@ namespace SpigotWrapper.Services.Servers
                     return createdServer;
 
                 await _serverRepository.Remove(createdServer.Id);
-                throw new Exception("ERROR: CONTACT CREATOR OF McWrapper!");
+                throw new Exception("ERROR: CONTACT CREATOR OF SpigotWrapper!");
             }
             catch (Exception)
             {

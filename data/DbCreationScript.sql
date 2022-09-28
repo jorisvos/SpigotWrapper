@@ -9,7 +9,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Drop table
 
--- DROP TABLE public.jar
+-- DROP TABLE public.jar;
 
 CREATE TABLE public.jar
 (
@@ -30,7 +30,7 @@ ALTER TABLE public.jar
 
 -- Drop table
 
--- DROP TABLE public.plugin
+-- DROP TABLE public.plugin;
 
 CREATE TABLE public.plugin
 (
@@ -50,7 +50,7 @@ ALTER TABLE public.plugin
 
 -- Drop table
 
--- DROP TABLE public.server
+-- DROP TABLE public.server;
 
 CREATE TABLE public.server
 (
@@ -76,7 +76,7 @@ ALTER TABLE public.server
 
 -- Drop table
 
--- DROP TABLE public.plugin_server
+-- DROP TABLE public.plugin_server;
 
 CREATE TABLE public.plugin_server
 (
@@ -105,7 +105,7 @@ ALTER TABLE public.plugin_server
 
 -- Drop table
 
--- DROP TABLE public.spigot_wrapper_setting
+-- DROP TABLE public.spigot_wrapper_setting;
 
 CREATE TABLE public.spigot_wrapper_setting
 (
