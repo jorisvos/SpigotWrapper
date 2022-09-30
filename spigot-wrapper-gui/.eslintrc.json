@@ -1,5 +1,18 @@
 {
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "react",
+    "eslint-plugin-react",
+    "@typescript-eslint"
+  ],
   "extends": [
-    "prettier"
-  ]
+    "prettier",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "sourceType": "module"
+  }
 }
