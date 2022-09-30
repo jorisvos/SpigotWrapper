@@ -9,6 +9,14 @@ import {
   POSTUploadJar,
 } from './jar';
 import { GETAllServerInfo, GETConsoleLog } from './server';
+import {
+  DELETESetting,
+  GETAllSettings,
+  GETSetting,
+  POSTAddSetting,
+  PUTUpdateSetting,
+} from './setting';
+import { GETStatus } from './spigotwrapper';
 
 export {
   GETRamUsage,
@@ -21,6 +29,12 @@ export {
   DELETEJar,
   POSTDownloadJar,
   POSTDownloadLatestJar,
+  GETStatus,
+  GETAllSettings,
+  POSTAddSetting,
+  PUTUpdateSetting,
+  GETSetting,
+  DELETESetting,
 };
 
 export const API = axios.create({
