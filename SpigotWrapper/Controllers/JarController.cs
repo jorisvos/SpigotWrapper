@@ -41,7 +41,7 @@ namespace SpigotWrapper.Controllers
                 var uploadedJar = await _jarService.Add(jar, jar.File);
 
                 return CreatedAtAction("GetById",
-                    "Plugin",
+                    "Jar",
                     new { id = uploadedJar.Id, version = version.ToString() },
                     uploadedJar);
             }
