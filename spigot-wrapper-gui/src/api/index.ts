@@ -37,8 +37,16 @@ export {
   DELETESetting,
 };
 
+function getBaseURL() {
+  if (process.env.REACT_APP_BACKEND_BASE_URL) {
+    return process.env.REACT_APP_BACKEND_BASE_URL;
+  } else {
+    throw new Error('REACT_APP_BACKEND_BASE_URL not set');
+  }
+}
+
 export const API = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_BASE_URL,
+  baseURL: getBaseURL(),
 });
 
 export default API;

@@ -1,0 +1,27 @@
+services:
+  spigot-wrapper:
+    image: spigot-wrapper:prod
+    container_name: spigot-wrapper
+    restart: always
+    external_links:
+      - postgres:postgres
+    build:
+      context: ../
+      dockerfile: SpigotWrapper/Dockerfile
+    ports:
+      - "1443:443"
+    env_file:
+      - .env
+    volumes:
+      - "${HOME}/.aspnet/https:/https/"
+      - "spigot-wrapper:/root/.aspnet/DataProtection-Keys"
+    networks:
+      - spigot-wrapper
+
+volumes:
+  spigot-wrapper:
+
+networks:
+  spigot-wrapper:
+    name: spigot-wrapper
+    external: true
