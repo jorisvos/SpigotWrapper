@@ -3,8 +3,8 @@ import { JarKind } from './jarkind';
 export interface Jar {
   id: string;
   fileName: string;
-  jarKind: JarKind; // TODO: change to enum
-  minecraftVersion: string; // TODO: possibly change to enum
+  jarKind: JarKind;
+  minecraftVersion: string; // TODO: change to enum
   createdAt: Date;
 }
 

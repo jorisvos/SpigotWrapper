@@ -1,45 +1,33 @@
-# Getting Started with Create React App
+# spigot-wrapper-gui
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the frontend for the SpigotWrapper
 
-## Available Scripts
+## Production build (using Docker)
 
-In the project directory, you can run:
+Replace <repo> with the path to your repo (~/code/SpigotWrapper/spigot-wrapper-gui)
+Run `docker build -a REACT_APP_BACKEND_BASE_URL=https://localhost:1443/api/v1/ -v <repo>/certs:/etc/nginx/certs -t spigot-wrapper-gui:prod .` to build production docker image.
+Run `docker run -it --rm -p 443:443 spigot-wrapper-gui:prod` to start the docker image.
+Edit your hosts file (with `sudo nano /etc/hosts`) and add `127.0.0.1 spigot-wrapper.local`
+Navigate to `https://spigot-wrapper.local/` to open the app.
 
-### `npm start`
+### Docker compose
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+To build and run with docker compose run `docker-compose up -d --build`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Setup SSL for Nginx Docker container
 
-### `npm test`
+Replace <repo> with the path to your repo (~/code/SpigotWrapper/spigot-wrapper-gui)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Past the following lines one for one (because you have to add input) [\*](https://msol.io/blog/tech/create-a-self-signed-ssl-certificate-with-openssl/)
 
-### `npm run build`
+```bash
+openssl genrsa -out <repo>/certs/key.pem 2048
+openssl req -new -sha256 -key <repo>/certs/key.pem -out <repo>/certs/csr.csr
+openssl req -x509 -sha256 -days 365 -key <repo>/certs/key.pem -in <repo>/certs/csr.csr -out <repo>/certs/certificate.pem
+openssl req -in <repo>/certs/csr.csr -text -noout | grep -i "Signature.*SHA256" && echo "All is well" || echo "This certificate will stop working in 2017! You must update OpenSSL to generate a widely-compatible certificate"
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
+## Learn More about create-react-app
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 

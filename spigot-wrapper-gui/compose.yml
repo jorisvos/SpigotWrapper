@@ -1,0 +1,22 @@
+services:
+  spigot-wrapper-gui:
+    image: spigot-wrapper-gui:prod
+    container_name: spigot-wrapper-gui
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_BACKEND_BASE_URL: 'https://localhost:1443/api/v1/'
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      - spigot-wrapper
+    volumes:
+      - ~/code/private/SpigotWrapper/spigot-wrapper-gui/certs:/etc/nginx/certs
+
+networks:
+  spigot-wrapper:
+    name: spigot-wrapper
+    external: true

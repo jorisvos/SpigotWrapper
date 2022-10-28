@@ -99,12 +99,15 @@ namespace SpigotWrapper
             services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.ToString()));
             services.AddAutoMapper();
 
-            //TODO: check if this needs to be removed before release (since we use env.IsDevelopment() in the Configure method)
             services.AddCors(options =>
             {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                    builder => { builder.WithOrigins("http://localhost:3000"); });
+                options.AddPolicy(MyAllowSpecificOrigins, builder => { 
+                    builder.WithOrigins("http://localhost:3000");
+                    builder.WithOrigins("https://spigot-wrapper.local");
+                });
             });
+
+            services.AddDataProtection();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -116,11 +119,12 @@ namespace SpigotWrapper
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors(MyAllowSpecificOrigins);
+
             if (env.IsDevelopment())
-            {
-                app.UseCors(MyAllowSpecificOrigins);
                 app.UseDeveloperExceptionPage();
-            }
+            else
+                app.UseHsts();
 
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

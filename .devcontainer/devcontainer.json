@@ -1,0 +1,38 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/dotnet-postgres
+{
+  "name": "C# (.NET)",
+  "dockerComposeFile": "../compose.yml",
+  "service": "spigot-wrapper",
+  "workspaceFolder": "/app",
+
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "tobiasalthoff.atom-material-theme",
+        "formulahendry.auto-rename-tag",
+        "aaron-bond.better-comments",
+        "ms-dotnettools.csharp",
+        "ms-vscode-remote.remote-containers",
+        "ms-azuretools.vscode-docker",
+        "dbaeumer.vscode-eslint",
+        "miguelsolorio.fluent-icons",
+        "oderwat.indent-rainbow",
+        "PKief.material-icon-theme",
+        "doggy8088.quicktype-refresh",
+        "ckolkman.vscode-postgres",
+        "esbenp.prettier-vscode",
+        "mohsen1.prettify-json",
+        "Gruntfuggly.todo-tree",
+        "ms-vscode-remote.remote-wsl",
+        "redhat.vscode-yaml",
+        "jorgeserrano.vscode-csharp-snippets",
+        "kreativ-software.csharpextensions",
+        "adrianwilczynski.namespace"
+      ]
+    }
+  }
+}
