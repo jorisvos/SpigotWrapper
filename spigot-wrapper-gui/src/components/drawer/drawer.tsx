@@ -1,17 +1,16 @@
-import clsx from 'clsx';
 import {
   Divider,
   Drawer as DrawerMUI,
-  IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Toolbar,
+  Typography,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import {
-  ChevronLeft as ChevronLeftIcon,
   Coffee as CoffeeIcon,
   Dashboard as DashboardIcon,
   Description as DescriptionIcon,
@@ -22,11 +21,6 @@ import {
 } from '@mui/icons-material';
 import React from 'react';
 import { useStyles } from './styles';
-
-interface Props {
-  open: boolean;
-  toggleDrawer: () => void;
-}
 
 const mainListItems = [
   { icon: <DashboardIcon />, text: 'Dashboard', link: '/dashboard' },
@@ -43,21 +37,16 @@ const secondaryListItems = [
   { icon: <DescriptionIcon />, text: 'Year-end sale' },
 ];
 
-export const Drawer: React.FC<Props> = ({ open, toggleDrawer }) => {
+export const Drawer = () => {
   const classes = useStyles();
 
   return (
-    <DrawerMUI
-      variant="permanent"
-      classes={{
-        paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-      }}
-      open={open}>
-      <div className={classes.toolbarIcon}>
-        <IconButton onClick={toggleDrawer}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </div>
+    <DrawerMUI variant="permanent" classes={{ paper: classes.drawerPaper }}>
+      <Toolbar className={classes.drawerHeader}>
+        <Typography component="h1" variant="h6" color="inherit" noWrap>
+          SpigotWrapper
+        </Typography>
+      </Toolbar>
       <Divider />
       <List>
         <div>
