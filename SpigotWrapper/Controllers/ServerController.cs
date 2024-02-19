@@ -186,8 +186,7 @@ namespace SpigotWrapper.Controllers
         {
             try
             {
-                if (server.JavaArguments == null)
-                    server.JavaArguments = "-jar -Xms128M -Xmx1G %jar% nogui";
+                server.JavaArguments ??= "-jar -Xms128M -Xmx1G %jar% nogui";
                 var createdServer = await _serverService.Add(server);
 
                 return CreatedAtAction("GetById",

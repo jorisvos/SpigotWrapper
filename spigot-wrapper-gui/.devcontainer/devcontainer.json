@@ -39,7 +39,9 @@
         "syler.sass-indented",
         "Gruntfuggly.todo-tree",
         "ms-vscode-remote.remote-wsl",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "paulshen.paul-typescript-toolkit",
+        "infeng.vscode-react-typescript"
       ]
     }
   }

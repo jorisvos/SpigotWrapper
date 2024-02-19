@@ -5,6 +5,7 @@ const drawerWidth = 240;
 
 export const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
+    marginLeft: drawerWidth,
     paddingRight: 24, // keep right padding when drawer closed
   },
   appBar: {
