@@ -8,23 +8,94 @@ import {
   POSTDownloadLatestJar,
   POSTUploadJar,
 } from './jar';
-import { GETAllServerInfo, GETConsoleLog } from './server';
+import {
+  DELETEPlugin,
+  GETAllPlugins,
+  GETPlugin,
+  POSTUploadPlugin,
+} from './plugin';
+import {
+  DELETEServer,
+  GETAcceptEULA,
+  GETAllServerInfo,
+  GETAllServers,
+  GETIsServerRunning,
+  GETKillAllServers,
+  GETKillServer,
+  GETMinecraftLog,
+  GETServer,
+  GETServerInfo,
+  GETServerLog,
+  GETServerPlugins,
+  GETSpigotWrapperLog,
+  GETStartServer,
+  GETStopAllServers,
+  GETStopServer,
+  GETWaitForServerStop,
+  GETWaitForServersToStop,
+  POSTAddServer,
+  POSTExecuteCommand,
+} from './server';
+import {
+  DELETESetting,
+  GETAllSettings,
+  GETSetting,
+  POSTAddSetting,
+  PUTUpdateSetting,
+} from './setting';
+import { GETStatus } from './spigotwrapper';
 
 export {
   GETRamUsage,
   GETCpuUsage,
+  GETStartServer,
+  GETServerInfo,
+  GETAllServers,
+  GETIsServerRunning,
+  GETKillServer,
+  GETKillAllServers,
+  GETMinecraftLog,
+  DELETEServer,
+  GETServer,
+  GETServerPlugins,
+  GETStopAllServers,
+  GETServerLog,
+  GETStopServer,
+  GETWaitForServerStop,
+  GETWaitForServersToStop,
+  GETAcceptEULA,
+  POSTAddServer,
+  POSTExecuteCommand,
   GETAllServerInfo,
-  GETConsoleLog,
+  GETSpigotWrapperLog,
   GETAllJars,
   POSTUploadJar,
   GETJar,
   DELETEJar,
   POSTDownloadJar,
   POSTDownloadLatestJar,
+  GETStatus,
+  GETAllSettings,
+  POSTAddSetting,
+  PUTUpdateSetting,
+  GETSetting,
+  DELETESetting,
+  GETPlugin,
+  DELETEPlugin,
+  GETAllPlugins,
+  POSTUploadPlugin,
 };
 
+function getBaseURL() {
+  if (process.env.REACT_APP_BACKEND_BASE_URL) {
+    return process.env.REACT_APP_BACKEND_BASE_URL;
+  } else {
+    throw new Error('REACT_APP_BACKEND_BASE_URL not set');
+  }
+}
+
 export const API = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_BASE_URL,
+  baseURL: getBaseURL(),
 });
 
 export default API;

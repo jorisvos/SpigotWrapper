@@ -1,0 +1,12 @@
+.devcontainer
+.idea
+.vscode
+build
+node_modules
+.dockerignore
+.env
+.env.example
+.gitignore
+Dockerfile
+compose.yml
+README.md

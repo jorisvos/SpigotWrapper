@@ -9,37 +9,21 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
-import {
-  Menu as MenuIcon,
-  Notifications as NotificationsIcon,
-} from '@mui/icons-material';
+import { Notifications as NotificationsIcon } from '@mui/icons-material';
 
 interface Props {
   title: string;
-  open: boolean;
-  toggleDrawer: () => void;
 }
 
-export const AppBar: React.FC<Props> = ({ title, open, toggleDrawer }) => {
+export const AppBar: React.FC<Props> = ({ title }) => {
   const classes = useStyles();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBarMUI
         position="fixed"
-        className={clsx(classes.appBar, open && classes.appBarShift)}>
+        className={clsx(classes.appBar, classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden,
-            )}>
-            <MenuIcon />
-          </IconButton>
           <Typography
             component="h1"
             variant="h6"

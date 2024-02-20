@@ -1,0 +1,48 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/typescript-node
+{
+  "name": "Node.js & TypeScript",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "args": {
+      "VARIANT": "18"
+    }
+  },
+
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "tobiasalthoff.atom-material-theme",
+        "formulahendry.auto-rename-tag",
+        "aaron-bond.better-comments",
+        "ms-vscode-remote.remote-containers",
+        "codemooseus.vscode-devtools-for-chrome",
+        "ms-azuretools.vscode-docker",
+        "oouo-diogo-perdigao.docthis",
+        "dsznajder.es7-react-js-snippets",
+        "dbaeumer.vscode-eslint",
+        "miguelsolorio.fluent-icons",
+        "HTMLHint.vscode-htmlhint",
+        "oderwat.indent-rainbow",
+        "PKief.material-icon-theme",
+        "christian-kohler.npm-intellisense",
+        "doggy8088.quicktype-refresh",
+        "ckolkman.vscode-postgres",
+        "esbenp.prettier-vscode",
+        "rvest.vs-code-prettier-eslint",
+        "mohsen1.prettify-json",
+        "WallabyJs.quokka-vscode",
+        "msjsdiag.vscode-react-native",
+        "syler.sass-indented",
+        "Gruntfuggly.todo-tree",
+        "ms-vscode-remote.remote-wsl",
+        "redhat.vscode-yaml",
+        "paulshen.paul-typescript-toolkit",
+        "infeng.vscode-react-typescript"
+      ]
+    }
+  }
+}

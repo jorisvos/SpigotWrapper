@@ -9,7 +9,6 @@ import { Jars } from './jars/jars';
 export const Root = () => {
   const location = useLocation();
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
   const [title, setTitle] = React.useState('Dashboard');
 
   useEffect(() => {
@@ -18,15 +17,13 @@ export const Root = () => {
     else setTitle('Dashboard');
   });
 
-  const toggleDrawer = () => (open ? setOpen(false) : setOpen(true));
-
   return (
     <div className={classes.root}>
       <CssBaseline />
 
-      <AppBar title={title} open={open} toggleDrawer={toggleDrawer} />
+      <AppBar title={title} />
 
-      <Drawer open={open} toggleDrawer={toggleDrawer} />
+      <Drawer />
 
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

@@ -23,6 +23,7 @@ export const POSTUploadJar = async (
       onUploadProgress,
     });
 
+    //TODO: remove following 2 console.logs
     console.log(response);
     return response.data;
   } catch (error) {
