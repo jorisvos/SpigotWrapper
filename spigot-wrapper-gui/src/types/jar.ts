@@ -11,5 +11,5 @@ export interface Jar {
 export interface UploadJarRequest {
   jarKind: JarKind;
   minecraftVersion: string;
-  file: any;
+  file: never;
 }

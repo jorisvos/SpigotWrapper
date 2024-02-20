@@ -1,6 +1,6 @@
 import { useStyles } from './styles';
 import React, { useState } from 'react';
-import { GETConsoleLog } from '../../api';
+import { GETSpigotWrapperLog } from '../../api';
 import { Container, Grid } from '@mui/material';
 import { Terminal } from '../../components';
 
@@ -12,7 +12,7 @@ export const Console = () => {
   const sendCommand = (command: string) => {};
 
   setTimeout(() => {
-    GETConsoleLog().then(setLog);
+    GETSpigotWrapperLog().then(setLog);
   }, 3000);
 
   return (
