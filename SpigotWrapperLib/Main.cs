@@ -13,6 +13,7 @@ namespace SpigotWrapperLib
         {
             CreateDirectories();
             Backup.BackupLogs();
+            Logger.Info("Main", "SpigotWrapper started!");
         }
         
         private static void CreateDirectories()

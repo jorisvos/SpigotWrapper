@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles';
 
 export const useStyles = makeStyles((theme: Theme) => ({
   container: {
+    margin: 'auto',
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },

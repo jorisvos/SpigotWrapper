@@ -6,7 +6,7 @@ import { Terminal } from '../../components';
 
 export const Console = () => {
   const classes = useStyles();
-  const [log, setLog] = useState<string>('');
+  const [log, setLog] = useState<string>('Loading console...');
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-unused-vars
   const sendCommand = (command: string) => {};
@@ -19,8 +19,8 @@ export const Console = () => {
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
         {/* Console */}
-        <Grid item xs={12} md={12} lg={8}>
-          <Terminal log={log} sendCommand={sendCommand} enableInput />
+        <Grid item xs={12} md={12} lg={12}>
+          <Terminal log={log} sendCommand={sendCommand} />
         </Grid>
       </Grid>
     </Container>

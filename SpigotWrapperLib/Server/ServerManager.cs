@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using SpigotWrapperLib.Log;
 
 namespace SpigotWrapperLib.Server
 {
@@ -15,6 +16,7 @@ namespace SpigotWrapperLib.Server
         {
             _wrappers = wrappers;
             Instance = this;
+            Logger.Info(GetType().Name, "started!");
         }
 
         public bool CreateServer(Wrapper wrapper)
