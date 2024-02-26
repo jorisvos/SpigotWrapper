@@ -1,48 +1,58 @@
 import React, { useEffect } from 'react';
 import { useStyles } from './styles';
 import clsx from 'clsx';
-import { CpuUsage, RamUsage } from '../../types';
-import { CircularProgress, Container, Grid, Link, Paper } from '@mui/material';
-import { LineChart, PieChart, Servers, Title } from '../../components';
-import { GETCpuUsage, GETRamUsage } from '../../api';
+import { CpuUsage, RamUsage, isError } from '../../types';
+import {
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  Link,
+  Paper,
+} from '@mui/material';
+import {
+  LineChart,
+  PieChart,
+  Servers,
+  Title,
+  Jars as JarsComp,
+} from '../../components';
+import { GETCpuUsage, GETRamUsage, POSTDownloadLatestJar } from '../../api';
+import axios, { AxiosError } from 'axios';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 
 export const Jars = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const [ramUsage, setRamUsage] = React.useState<RamUsage[]>();
-  const [cpuUsage, setCpuUsage] = React.useState<CpuUsage[]>();
 
-  useEffect(() => {
-    if (ramUsage == undefined) setRamUsage(GETRamUsage());
-    if (cpuUsage == undefined) setCpuUsage(GETCpuUsage());
-  });
+  const downloadLatest = () => {
+    POSTDownloadLatestJar().then((data) => {
+      if (isError(data)) {
+        console.log('failure');
+      } else {
+        console.log('success');
+      }
+    });
+  };
 
   return (
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
-        {/* RAM Usage LineChart */}
+        {/* Jars table */}
         <Grid item xs={12} md={8} lg={9}>
           <Paper className={fixedHeightPaper}>
-            {ramUsage ? (
-              <LineChart
-                title="RAM Usage (in progress)"
-                info="RAM"
-                data={ramUsage}
-                unit="MB"
-              />
-            ) : (
-              <CircularProgress />
-            )}
+            <JarsComp />
           </Paper>
         </Grid>
-        {/* CPU Usage PieChart */}
+        {/* Actions */}
         <Grid item xs={12} md={4} lg={3}>
           <Paper className={fixedHeightPaper}>
-            {cpuUsage ? (
-              <PieChart title="CPU Usage (in progress)" data={cpuUsage} />
-            ) : (
-              <CircularProgress />
-            )}
+            <div>
+              This will contain buttons with actions (Add, Remove, Upload)
+              <Button onClick={downloadLatest}>
+                Download latest official minecraft server
+              </Button>
+            </div>
           </Paper>
         </Grid>
         {/* Recent Servers */}

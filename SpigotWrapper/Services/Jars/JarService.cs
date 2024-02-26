@@ -62,7 +62,7 @@ namespace SpigotWrapper.Services.Jars
             _logger.Info($"Removed {jar.JarKind} ({jar.MinecraftVersion})");
         }
 
-        public async Task<Jar> DownloadLatest()
+        public async Task<dynamic> DownloadLatest()
         {
             var web = new HtmlWeb();
             var doc = await web.LoadFromWebAsync("https://www.minecraft.net/nl-nl/download/server");
@@ -77,14 +77,14 @@ namespace SpigotWrapper.Services.Jars
             return await DownloadJar(jarDownloadUrl, jarFileName, JarKind.Vanilla, minecraftVersion);
         }
 
-        public async Task<Jar> DownloadJar(string jarDownloadUrl, string jarFileName, JarKind jarKind,
+        public async Task<dynamic> DownloadJar(string jarDownloadUrl, string jarFileName, JarKind jarKind,
             string minecraftVersion)
         {
             if (string.IsNullOrEmpty(jarDownloadUrl) || string.IsNullOrEmpty(jarFileName) ||
                 string.IsNullOrEmpty(minecraftVersion))
                 return null;
             if (File.Exists(Path.Combine(JarPath, jarFileName)))
-                return null;
+                return Error.JarAlreadyDownloaded;
 
             var jar = new Jar { FileName = jarFileName, JarKind = jarKind, MinecraftVersion = minecraftVersion };
             await CheckForUniqueConstraints(jar);

@@ -13,8 +13,8 @@ namespace SpigotWrapper.Services.Jars
         Task<Jar> Add(Jar jar, IFormFile file);
         Task<Jar> Get(Guid id);
         Task Remove(Guid id);
-        Task<Jar> DownloadLatest();
-        Task<Jar> DownloadJar(string jarDownloadUrl, string jarFileName, JarKind jarKind, string minecraftVersion);
+        Task<dynamic> DownloadLatest();
+        Task<dynamic> DownloadJar(string jarDownloadUrl, string jarFileName, JarKind jarKind, string minecraftVersion);
         Task<string> GetJarPath(Guid id);
     }
 }

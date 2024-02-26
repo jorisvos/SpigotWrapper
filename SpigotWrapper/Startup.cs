@@ -61,6 +61,7 @@ namespace SpigotWrapper
                 PostgresConnectionFactory.CreatePostgresConnection(p.GetRequiredService<IOptions<PostgresOptions>>()
                     .Value));
             NpgsqlConnection.GlobalTypeMapper.MapEnum<JarKind>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<Error>();
 
             // Repositories
             services.AddTransient<IJarRepository, JarRepository>();

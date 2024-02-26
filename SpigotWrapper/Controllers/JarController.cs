@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SpigotWrapper.Config;
 using SpigotWrapper.Models;
 using SpigotWrapper.Services.Jars;
 using SpigotWrapper.ViewModels;
@@ -76,10 +77,12 @@ namespace SpigotWrapper.Controllers
         [HttpPost("download")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Jar>> Download(JarDownloadRequest jarDownloadRequest)
+        public async Task<ActionResult<dynamic>> Download(JarDownloadRequest jarDownloadRequest)
         {
             var jar = await _jarService.DownloadJar(jarDownloadRequest.DownloadUrl, jarDownloadRequest.FileName,
                 jarDownloadRequest.JarKind, jarDownloadRequest.MinecraftVersion);
+            if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
+                return BadRequest("That version is already downloaded!");
             if (jar == null)
                 return BadRequest();
             return jar;
@@ -88,9 +91,11 @@ namespace SpigotWrapper.Controllers
         [HttpPost("downloadlatest")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Jar>> DownloadLatest()
+        public async Task<ActionResult<dynamic>> DownloadLatest()
         {
             var jar = await _jarService.DownloadLatest();
+            if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
+                return BadRequest(jar);
             if (jar == null)
                 return BadRequest();
             return jar;

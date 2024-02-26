@@ -8,4 +8,9 @@ namespace SpigotWrapper.Config
         Paper = 3,
         Forge = 4
     }
+
+    public enum Error
+    {
+        JarAlreadyDownloaded = 0,
+    }
 }

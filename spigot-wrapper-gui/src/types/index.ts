@@ -4,8 +4,9 @@ import { Plugin, UploadPluginRequest } from './plugin';
 import { RamUsage } from './ramusage';
 import { CpuUsage } from './cpuusage';
 import { AddServerRequest, Server, ServerInfo } from './server';
+import { Error, isError } from './error';
 
-export { JarKind };
+export { JarKind, Error, isError };
 export type {
   ServerInfo,
   Jar,

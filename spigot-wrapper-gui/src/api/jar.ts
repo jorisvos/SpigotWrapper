@@ -1,5 +1,6 @@
 import { API } from './index';
-import { Jar, JarKind, UploadJarRequest } from '../types';
+import { Error, Jar, JarKind, UploadJarRequest } from '../types';
+import axios from 'axios';
 
 export const GETAllJars = async (): Promise<Jar[]> =>
   (await API.get('/jar')).data;
@@ -54,5 +55,14 @@ export const POSTDownloadJar = async (
     })
   ).data;
 
-export const POSTDownloadLatestJar = async (): Promise<Jar> =>
-  (await API.post('/jar/downloadlatest')).data;
+export const POSTDownloadLatestJar = async (): Promise<Jar | Error> => {
+  try {
+    return (await API.post('/jar/downloadlatest')).data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      return error.response.data;
+    } else {
+      return Error.UnexpectedError;
+    }
+  }
+};
