@@ -16,7 +16,7 @@ interface Props {
   serverCount?: number;
 }
 
-export const Servers: React.FC<Props> = ({ serverCount }) => {
+export const ServersOverview: React.FC<Props> = ({ serverCount }) => {
   const [servers, setServers] = React.useState<ServerInfo[]>();
 
   useEffect(() => {
@@ -49,7 +49,9 @@ export const Servers: React.FC<Props> = ({ serverCount }) => {
                 <TableCell>
                   {moment(server.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                 </TableCell>
-                <TableCell>{server.isRunning ? 'Running' : 'Stopped'}</TableCell>
+                <TableCell>
+                  {server.isRunning ? 'Running' : 'Stopped'}
+                </TableCell>
                 <TableCell align="right">{server.id}</TableCell>
               </TableRow>
             ))}
@@ -62,4 +64,4 @@ export const Servers: React.FC<Props> = ({ serverCount }) => {
   );
 };
 
-export default Servers;
+export default ServersOverview;

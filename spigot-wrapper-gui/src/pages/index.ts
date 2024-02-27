@@ -1,5 +1,6 @@
 import Dashboard from './dashboard/dashboard';
 import Console from './console/console';
+import Jars from './jars/jars';
 import { Root } from './root';
 
-export { Root, Dashboard, Console };
+export { Root, Dashboard, Console, Jars };

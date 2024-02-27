@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { CpuUsage, RamUsage } from '../../types';
 import { CircularProgress, Grid, Link, Paper, Box } from '@mui/material';
-import { LineChart, PieChart, Servers, Title } from '../../components';
+import { LineChart, PieChart, ServersOverview, Title } from '../../components';
 import { GETCpuUsage, GETRamUsage } from '../../api';
 
 export const Dashboard = () => {
@@ -23,8 +23,7 @@ export const Dashboard = () => {
             display: 'flex',
             flexDirection: 'column',
             height: 240,
-          }}
-        >
+          }}>
           {ramUsage ? (
             <LineChart
               title="RAM Usage (in progress)"
@@ -45,8 +44,7 @@ export const Dashboard = () => {
             display: 'flex',
             flexDirection: 'column',
             height: 240,
-          }}
-        >
+          }}>
           {cpuUsage ? (
             <PieChart title="CPU Usage (in progress)" data={cpuUsage} />
           ) : (
@@ -58,7 +56,7 @@ export const Dashboard = () => {
       <Grid item xs={12}>
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
           <Title>Servers</Title>
-          <Servers serverCount={5} />
+          <ServersOverview serverCount={5} />
           <Box sx={{ mt: 3 }}>
             <Link color="primary" href="/servers">
               See all servers

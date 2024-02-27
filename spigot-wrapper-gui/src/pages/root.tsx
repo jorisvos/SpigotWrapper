@@ -1,9 +1,8 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Box, CssBaseline, Container, Toolbar } from '@mui/material';
-import { AppBar, Copyright, Drawer, Servers } from '../components';
-import { Console, Dashboard } from './index';
-import { Jars } from './jars/jars';
+import { AppBar, Copyright, Drawer, ServersOverview } from '../components';
+import { Console, Dashboard, Jars } from './index';
 
 export const Root = () => {
   const [open, setOpen] = useState(true);
@@ -36,8 +35,7 @@ export const Root = () => {
           flexGrow: 1,
           height: '100vh',
           overflow: 'auto',
-        }}
-      >
+        }}>
         <Toolbar />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Routes>
@@ -45,7 +43,7 @@ export const Root = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/console" element={<Console />} />
             <Route path="/jars" element={<Jars />} />
-            <Route path="/servers" element={<Servers />} />
+            <Route path="/servers" element={<ServersOverview />} />
           </Routes>
           <Copyright />
         </Container>
