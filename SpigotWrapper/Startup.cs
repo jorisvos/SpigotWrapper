@@ -103,7 +103,7 @@ namespace SpigotWrapper
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins, builder => { 
-                    builder.WithOrigins("http://localhost:3000");
+                    builder.WithOrigins("http://localhost:3000").AllowAnyMethod();
                     builder.WithOrigins("https://spigot-wrapper.local");
                 });
             });

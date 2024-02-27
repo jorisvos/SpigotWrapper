@@ -1,9 +1,15 @@
-import React, { useEffect } from 'react';
-import { GETAllJars, GETAllServerInfo } from '../../api';
-import { Jar, ServerInfo } from '../../types';
+import React, { useEffect, useState } from 'react';
+import { DELETEJar, GETAllJars } from '../../api';
+import { Jar } from '../../types';
 import {
   CircularProgress,
-  Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -11,13 +17,35 @@ import {
   TableRow,
 } from '@mui/material';
 import moment from 'moment';
+import { Delete } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
-export const Jars = () => {
-  const [jars, setJars] = React.useState<Jar[]>();
+interface Props {
+  jars: Jar[] | undefined;
+  updateJars: () => void;
+}
 
-  useEffect(() => {
-    if (jars == undefined) GETAllJars().then((data) => setJars(data));
-  });
+export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState('');
+
+  const handleClose = () => {
+    setId('');
+    setOpen(false);
+  };
+  const handleOpen = (id: string) => {
+    setId(id);
+    setOpen(true);
+  };
+
+  const handleRemove = () => {
+    removeJar(id);
+    handleClose();
+  };
+  const removeJar = (id: string) =>
+    DELETEJar(id)
+      .then((data) => updateJars())
+      .finally(() => toast.success('Removed jar successfully.'));
 
   return (
     <>
@@ -25,6 +53,7 @@ export const Jars = () => {
         <Table size="small">
           <TableHead>
             <TableRow>
+              <TableCell></TableCell>
               <TableCell>Minecraft API</TableCell>
               <TableCell>Version</TableCell>
               <TableCell>Created at</TableCell>
@@ -35,6 +64,11 @@ export const Jars = () => {
           <TableBody>
             {jars.map((jar) => (
               <TableRow key={jar.id}>
+                <TableCell>
+                  <IconButton onClick={() => handleOpen(jar.id)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
                 <TableCell>{jar.jarKind}</TableCell>
                 <TableCell>{jar.minecraftVersion}</TableCell>
                 <TableCell>
@@ -49,6 +83,30 @@ export const Jars = () => {
       ) : (
         <CircularProgress />
       )}
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description">
+        <DialogTitle id="alert-dialog-title">
+          Are you sure you want to remove this jar?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {jars?.find((jar) => jar.id === id)?.jarKind}{' '}
+            {jars?.find((jar) => jar.id === id)?.minecraftVersion}
+            <br />
+            file name: {jars?.find((jar) => jar.id === id)?.fileName}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>No</Button>
+          <Button onClick={handleRemove} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

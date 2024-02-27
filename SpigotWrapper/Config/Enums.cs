@@ -12,5 +12,7 @@ namespace SpigotWrapper.Config
     public enum Error
     {
         JarAlreadyDownloaded = 0,
+        JarFilenameMustBeUnique = 1,
+        JarKindAndVersionMustBeUniqueTogether = 2,
     }
 }

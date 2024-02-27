@@ -35,11 +35,14 @@ namespace SpigotWrapper.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [RequestSizeLimit(100_000_000)]
         public async Task<ActionResult> Upload([FromForm] Jar jar, ApiVersion version)
         {
             try
             {
+                Console.WriteLine("test1");
                 var uploadedJar = await _jarService.Add(jar, jar.File);
+                Console.WriteLine("test2");
 
                 return CreatedAtAction("GetById",
                     "Jar",
@@ -82,7 +85,7 @@ namespace SpigotWrapper.Controllers
             var jar = await _jarService.DownloadJar(jarDownloadRequest.DownloadUrl, jarDownloadRequest.FileName,
                 jarDownloadRequest.JarKind, jarDownloadRequest.MinecraftVersion);
             if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
-                return BadRequest("That version is already downloaded!");
+                return BadRequest(jar);
             if (jar == null)
                 return BadRequest();
             return jar;

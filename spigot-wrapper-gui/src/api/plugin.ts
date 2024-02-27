@@ -1,13 +1,14 @@
 import API from './index';
 import { Plugin, UploadPluginRequest } from '../types';
+import { AxiosProgressEvent } from 'axios';
 
 export const GETAllPlugins = async (): Promise<Plugin[]> =>
   (await API.get('/plugin')).data;
 
 export const POSTUploadPlugin = async (
   data: UploadPluginRequest,
-  onUploadProgress = (event: any) =>
-    console.log(Math.round((100 * event.loaded) / event.total)),
+  onUploadProgress = (event: AxiosProgressEvent) =>
+    console.log(Math.round((100 * event.loaded) / (event.total ?? 1))),
 ): Promise<Plugin | null> => {
   const formData = new FormData();
   formData.append('name', data.name);

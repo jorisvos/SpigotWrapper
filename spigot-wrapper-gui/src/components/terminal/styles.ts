@@ -1,6 +1,7 @@
 import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
+//TODO: remove this file
+/*
 export const useStyles = makeStyles((theme: Theme) => ({
   terminalContainer: {
     height: 400,
@@ -31,3 +32,4 @@ export const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: 0,
   },
 }));
+*/

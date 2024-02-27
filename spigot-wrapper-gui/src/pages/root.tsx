@@ -1,14 +1,13 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
-import React, { useEffect } from 'react';
-import { useStyles } from './styles';
-import { Box, CssBaseline } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, CssBaseline, Container, Toolbar } from '@mui/material';
 import { AppBar, Copyright, Drawer, Servers } from '../components';
 import { Console, Dashboard } from './index';
 import { Jars } from './jars/jars';
 
 export const Root = () => {
+  const [open, setOpen] = useState(true);
   const location = useLocation();
-  const classes = useStyles();
   const [title, setTitle] = React.useState('Dashboard');
 
   useEffect(() => {
@@ -17,27 +16,40 @@ export const Root = () => {
     else setTitle('Dashboard');
   });
 
+  const toggleDrawer = () => setOpen(!open);
+
   return (
-    <div className={classes.root}>
+    <Box sx={{ display: 'flex' }}>
       <CssBaseline />
 
-      <AppBar title={title} />
+      <AppBar title={title} open={open} toggleDrawer={toggleDrawer} />
 
-      <Drawer />
+      <Drawer open={open} toggleDrawer={toggleDrawer} />
 
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/console" element={<Console />} />
-          <Route path="/jars" element={<Jars />} />
-          <Route path="/servers" element={<Servers />} />
-        </Routes>
-        <Box pt={4}>
+      <Box
+        component="main"
+        sx={{
+          backgroundColor: (theme) =>
+            theme.palette.mode === 'light'
+              ? theme.palette.grey[100]
+              : theme.palette.grey[900],
+          flexGrow: 1,
+          height: '100vh',
+          overflow: 'auto',
+        }}
+      >
+        <Toolbar />
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/console" element={<Console />} />
+            <Route path="/jars" element={<Jars />} />
+            <Route path="/servers" element={<Servers />} />
+          </Routes>
           <Copyright />
-        </Box>
-      </main>
-    </div>
+        </Container>
+      </Box>
+    </Box>
   );
 };

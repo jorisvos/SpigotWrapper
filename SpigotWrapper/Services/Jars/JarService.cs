@@ -108,13 +108,13 @@ namespace SpigotWrapper.Services.Jars
             if (jars.Any(j => j.FileName == jar.FileName))
             {
                 _logger.Error("The jar filename must be unique.");
-                throw new Exception("The jar filename must be unique.");
+                throw new Exception(Error.JarFilenameMustBeUnique.ToString());
             }
 
             if (jars.Any(j => j.JarKind == jar.JarKind && j.MinecraftVersion == jar.MinecraftVersion))
             {
                 _logger.Error("The jar kind and minecraft version must be unique.");
-                throw new Exception("The jar kind and minecraft version together must be unique.");
+                throw new Exception(Error.JarKindAndVersionMustBeUniqueTogether.ToString());
             }
         }
     }
