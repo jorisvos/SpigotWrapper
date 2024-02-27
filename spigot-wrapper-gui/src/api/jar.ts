@@ -1,5 +1,12 @@
 import { API } from './index';
-import { Jar, JarKind, UploadJarRequest } from '../types';
+import {
+  DownloadJarRequest,
+  Error,
+  Jar,
+  JarKind,
+  UploadJarRequest,
+} from '../types';
+import axios, { AxiosProgressEvent } from 'axios';
 
 export const GETAllJars = async (): Promise<Jar[]> =>
   (await API.get('/jar')).data;
@@ -7,29 +14,21 @@ export const GETAllJars = async (): Promise<Jar[]> =>
 // https://www.bezkoder.com/axios-file-upload/
 export const POSTUploadJar = async (
   data: UploadJarRequest,
-  onUploadProgress = (event: any) =>
-    console.log(Math.round((100 * event.loaded) / event.total)),
-): Promise<Jar | null> => {
+  onUploadProgress = (event: AxiosProgressEvent) =>
+    console.log(Math.round((100 * event.loaded) / (event.total ?? 1))),
+): Promise<Jar> => {
   const formData = new FormData();
   formData.append('jarKind', data.jarKind);
   formData.append('minecraftVersion', data.minecraftVersion);
   formData.append('file', data.file);
 
-  try {
-    const response = await API.post('/jar', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      onUploadProgress,
-    });
-
-    //TODO: remove following 2 console.logs
-    console.log(response);
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
+  const response = await API.post('/jar', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    onUploadProgress,
+  });
+  return response.data;
 };
 
 export const GETJar = async (id: string): Promise<Jar> =>
@@ -39,20 +38,23 @@ export const GETJar = async (id: string): Promise<Jar> =>
 export const DELETEJar = async (id: string): Promise<string> =>
   (await API.delete(`/jar/${id}`)).statusText;
 
-export const POSTDownloadJar = async (
-  downloadUrl: string,
-  fileName: string,
-  jarKind: JarKind,
-  minecraftVersion: string,
-): Promise<Jar> =>
+export const POSTDownloadJar = async (data: DownloadJarRequest): Promise<Jar> =>
   (
-    await API.post('/jar/download', {
-      downloadUrl,
-      fileName,
-      jarKind,
-      minecraftVersion,
+    await API.post('/jar/download', data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
   ).data;
 
-export const POSTDownloadLatestJar = async (): Promise<Jar> =>
-  (await API.post('/jar/downloadlatest')).data;
+export const POSTDownloadLatestJar = async (): Promise<Jar | Error> => {
+  try {
+    return (await API.post('/jar/downloadlatest')).data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      return error.response.data;
+    } else {
+      return Error.UnexpectedError;
+    }
+  }
+};

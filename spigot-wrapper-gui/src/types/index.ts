@@ -1,11 +1,12 @@
-import { Jar, UploadJarRequest } from './jar';
+import { Jar, UploadJarRequest, DownloadJarRequest } from './jar';
 import { JarKind } from './jarkind';
 import { Plugin, UploadPluginRequest } from './plugin';
 import { RamUsage } from './ramusage';
 import { CpuUsage } from './cpuusage';
 import { AddServerRequest, Server, ServerInfo } from './server';
+import { Error, isError, getErrorMsg } from './error';
 
-export { JarKind };
+export { JarKind, Error, isError, getErrorMsg };
 export type {
   ServerInfo,
   Jar,
@@ -16,4 +17,5 @@ export type {
   Server,
   AddServerRequest,
   UploadPluginRequest,
+  DownloadJarRequest,
 };

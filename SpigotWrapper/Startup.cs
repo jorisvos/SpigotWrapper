@@ -61,6 +61,7 @@ namespace SpigotWrapper
                 PostgresConnectionFactory.CreatePostgresConnection(p.GetRequiredService<IOptions<PostgresOptions>>()
                     .Value));
             NpgsqlConnection.GlobalTypeMapper.MapEnum<JarKind>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<Error>();
 
             // Repositories
             services.AddTransient<IJarRepository, JarRepository>();
@@ -102,7 +103,7 @@ namespace SpigotWrapper
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins, builder => { 
-                    builder.WithOrigins("http://localhost:3000");
+                    builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
                     builder.WithOrigins("https://spigot-wrapper.local");
                 });
             });

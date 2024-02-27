@@ -11,5 +11,12 @@ export interface Jar {
 export interface UploadJarRequest {
   jarKind: JarKind;
   minecraftVersion: string;
-  file: never;
+  file: File;
+}
+
+export interface DownloadJarRequest {
+  downloadUrl: string;
+  jarKind: JarKind;
+  minecraftVersion: string;
+  fileName: string;
 }

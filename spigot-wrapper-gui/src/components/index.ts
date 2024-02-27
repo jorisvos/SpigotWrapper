@@ -7,6 +7,7 @@ import ScrollToElement from './scrolltoelement/scrolltoelement';
 import Servers from './servers/servers';
 import Terminal from './terminal/terminal';
 import Title from './title/title';
+import Jars from './jars/jars';
 
 export {
   AppBar,
@@ -18,4 +19,5 @@ export {
   Servers,
   Terminal,
   ScrollToElement,
+  Jars,
 };

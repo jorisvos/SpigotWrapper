@@ -8,4 +8,11 @@ namespace SpigotWrapper.Config
         Paper = 3,
         Forge = 4
     }
+
+    public enum Error
+    {
+        JarAlreadyDownloaded = 0,
+        JarFilenameMustBeUnique = 1,
+        JarKindAndVersionMustBeUniqueTogether = 2,
+    }
 }

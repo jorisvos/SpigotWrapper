@@ -18,4 +18,6 @@ export const theme: ThemeOptions = createTheme({
   },
 });
 
+export const drawerWidth = 240;
+
 export default theme;
