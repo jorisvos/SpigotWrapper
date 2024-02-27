@@ -1,5 +1,11 @@
 import { API } from './index';
-import { Error, Jar, JarKind, UploadJarRequest } from '../types';
+import {
+  DownloadJarRequest,
+  Error,
+  Jar,
+  JarKind,
+  UploadJarRequest,
+} from '../types';
 import axios, { AxiosProgressEvent } from 'axios';
 
 export const GETAllJars = async (): Promise<Jar[]> =>
@@ -32,18 +38,12 @@ export const GETJar = async (id: string): Promise<Jar> =>
 export const DELETEJar = async (id: string): Promise<string> =>
   (await API.delete(`/jar/${id}`)).statusText;
 
-export const POSTDownloadJar = async (
-  downloadUrl: string,
-  fileName: string,
-  jarKind: JarKind,
-  minecraftVersion: string,
-): Promise<Jar> =>
+export const POSTDownloadJar = async (data: DownloadJarRequest): Promise<Jar> =>
   (
-    await API.post('/jar/download', {
-      downloadUrl,
-      fileName,
-      jarKind,
-      minecraftVersion,
+    await API.post('/jar/download', data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
   ).data;
 

@@ -1,4 +1,4 @@
-import { Jar, UploadJarRequest } from './jar';
+import { Jar, UploadJarRequest, DownloadJarRequest } from './jar';
 import { JarKind } from './jarkind';
 import { Plugin, UploadPluginRequest } from './plugin';
 import { RamUsage } from './ramusage';
@@ -17,4 +17,5 @@ export type {
   Server,
   AddServerRequest,
   UploadPluginRequest,
+  DownloadJarRequest,
 };

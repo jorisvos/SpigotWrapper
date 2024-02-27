@@ -13,3 +13,10 @@ export interface UploadJarRequest {
   minecraftVersion: string;
   file: File;
 }
+
+export interface DownloadJarRequest {
+  downloadUrl: string;
+  jarKind: JarKind;
+  minecraftVersion: string;
+  fileName: string;
+}

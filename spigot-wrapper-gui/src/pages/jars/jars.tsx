@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  DownloadJarRequest,
   Error,
   Jar,
   JarKind,
@@ -27,7 +28,12 @@ import {
 } from '@mui/material';
 import { Bounce, ToastContainer, UpdateOptions, toast } from 'react-toastify';
 import { Title, Jars as JarsComp } from '../../components';
-import { GETAllJars, POSTDownloadLatestJar, POSTUploadJar } from '../../api';
+import {
+  GETAllJars,
+  POSTDownloadJar,
+  POSTDownloadLatestJar,
+  POSTUploadJar,
+} from '../../api';
 import axios from 'axios';
 import { Refresh } from '@mui/icons-material';
 
@@ -36,6 +42,7 @@ export const Jars = () => {
   const [disableButtons, setDisableButtons] = useState(false);
   const [disableDialogButtons, setDisableDialogButtons] = useState(false);
   const [openUpload, setOpenUpload] = useState(false);
+  const [openDownload, setOpenDownload] = useState(false);
   const [jarKind, setJarKind] = useState('');
 
   useEffect(() => {
@@ -49,6 +56,17 @@ export const Jars = () => {
   const handleUploadClose = () => {
     updateJars();
     setOpenUpload(false);
+    setDisableButtons(false);
+    setDisableDialogButtons(false);
+  };
+
+  const handleDownloadOpen = () => {
+    setDisableButtons(true);
+    setOpenDownload(true);
+  };
+  const handleDownloadClose = () => {
+    updateJars();
+    setOpenDownload(false);
     setDisableButtons(false);
     setDisableDialogButtons(false);
   };
@@ -69,10 +87,8 @@ export const Jars = () => {
     transition: Bounce,
   };
 
+  //TODO: fix error occuring when backend is not running
   const updateJars = () => GETAllJars().then((data) => setJars(data));
-  const download = () => {
-    console.log('NOT IMPLEMETED YET!');
-  };
   const downloadLatest = () => {
     setDisableButtons(true);
     const id = toast.loading('Downloading latest version...');
@@ -109,13 +125,13 @@ export const Jars = () => {
           sx={{ mr: 1 }}
           variant="outlined"
           onClick={handleUploadOpen}>
-          Upload
+          Upload jar
         </Button>
         <Button
           disabled={disableButtons}
           sx={{ mr: 1 }}
           variant="outlined"
-          onClick={download}>
+          onClick={handleDownloadOpen}>
           Download jar
         </Button>
         <Button
@@ -244,6 +260,129 @@ export const Jars = () => {
             </Button>
             <Button type="submit" disabled={disableDialogButtons}>
               Upload
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+
+      <Box>
+        {/* Download Dialog */}
+        <Dialog
+          open={openDownload}
+          onClose={handleDownloadClose}
+          PaperProps={{
+            component: 'form',
+            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+              event.preventDefault();
+              setDisableDialogButtons(true);
+
+              const formData = new FormData(event.currentTarget);
+              const formJson = Object.fromEntries((formData as any).entries());
+
+              const data: DownloadJarRequest = {
+                downloadUrl: formJson.downloadUrl,
+                jarKind: formJson.jarKind,
+                minecraftVersion: formJson.minecraftVersion,
+                fileName: formJson.fileName,
+              };
+
+              const id = toast.loading('Downloading jar...');
+              POSTDownloadJar(data)
+                .then((data) => {
+                  toast.update(id, {
+                    render: 'Downloaded jar.',
+                    type: 'success',
+                    isLoading: false,
+                    ...defaultToastSettings,
+                  });
+                })
+                .catch((error) => {
+                  if (
+                    axios.isAxiosError(error) &&
+                    error.response &&
+                    isError(error.response.data)
+                  ) {
+                    toast.update(id, {
+                      render: getErrorMsg(error.response.data),
+                      type: 'error',
+                      isLoading: false,
+                      ...defaultToastSettings,
+                    });
+                  } else {
+                    toast.update(id, {
+                      render: getErrorMsg(Error.UnexpectedError),
+                      type: 'error',
+                      isLoading: false,
+                      ...defaultToastSettings,
+                    });
+                  }
+                })
+                .finally(handleDownloadClose);
+            },
+          }}>
+          <DialogTitle>Download a Jar</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              To download a (custom) jar file, fill out this form. All fields
+              ending with a * are required.
+            </DialogContentText>
+
+            <Divider sx={{ mt: 1, mb: 1 }} />
+
+            <TextField
+              required
+              margin="dense"
+              id="url"
+              name="downloadUrl"
+              label="Download Url (example: https://download.getbukkit.org/spigot/spigot-1.20.4.jar)"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+            <InputLabel htmlFor="jar-kind">Jar Kind *</InputLabel>
+            <Select
+              native
+              required
+              id="kind"
+              name="jarKind"
+              value={jarKind}
+              onChange={handleJarKindChange}
+              input={<OutlinedInput label="Jar Kind *" id="jar-kind" />}>
+              {Object.values(JarKind).map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </Select>
+            <TextField
+              required
+              margin="dense"
+              id="version"
+              name="minecraftVersion"
+              label="Minecraft Version (example: 1.20.2)"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+            <TextField
+              required
+              margin="dense"
+              id="filename"
+              name="fileName"
+              label="File Name (example: server.jar)"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleDownloadClose}
+              disabled={disableDialogButtons}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={disableDialogButtons}>
+              Download
             </Button>
           </DialogActions>
         </Dialog>
