@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { GETAllServerInfo } from '../../api';
-import { ServerInfo } from '../../types';
+import { GETAllServerInfo } from '../api';
+import { ServerInfo } from '../types';
 import {
   CircularProgress,
   Link,

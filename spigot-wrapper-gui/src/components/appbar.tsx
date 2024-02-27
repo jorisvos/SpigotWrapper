@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { Notifications as NotificationsIcon, Menu as MenuIcon } from '@mui/icons-material';
-import { drawerWidth } from '../../core/theme';
+import { drawerWidth } from '../core/theme';
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;

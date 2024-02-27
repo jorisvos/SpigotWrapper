@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import Title from '../title/title';
+import Title from './title';
 
 interface Props {
   title: string;

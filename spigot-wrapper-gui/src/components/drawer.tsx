@@ -22,7 +22,7 @@ import {
   ChevronLeft as ChevronLeftIcon,
 } from '@mui/icons-material';
 import React from 'react';
-import { drawerWidth } from '../../core/theme';
+import { drawerWidth } from '../core/theme';
 
 const mainListItems = [
   { icon: <DashboardIcon />, text: 'Dashboard', link: '/dashboard' },

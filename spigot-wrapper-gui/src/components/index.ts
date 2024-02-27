@@ -1,13 +1,13 @@
-import AppBar from './appbar/appbar';
-import { Copyright } from './copyright/copyright';
-import Drawer from './drawer/drawer';
-import LineChart from './linechart/linechart';
-import PieChart from './piechart/piechart';
-import ScrollToElement from './scrolltoelement/scrolltoelement';
-import Servers from './servers/servers';
-import Terminal from './terminal/terminal';
-import Title from './title/title';
-import Jars from './jars/jars';
+import AppBar from './appbar';
+import { Copyright } from './copyright';
+import Drawer from './drawer';
+import LineChart from './linechart';
+import PieChart from './piechart';
+import ScrollToElement from './scrolltoelement';
+import Servers from './servers';
+import Terminal from './terminal';
+import Title from './title';
+import Jars from './jars';
 
 export {
   AppBar,

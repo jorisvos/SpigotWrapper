@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { DELETEJar, GETAllJars } from '../../api';
-import { Jar } from '../../types';
+import { DELETEJar, GETAllJars } from '../api';
+import { Jar } from '../types';
 import {
   CircularProgress,
   Dialog,
