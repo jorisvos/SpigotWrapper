@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { DELETEJar, GETAllJars } from '../api';
+import React, { useState } from 'react';
+import { DELETEJar } from '../api';
 import { Jar } from '../types';
 import {
   CircularProgress,
@@ -44,7 +44,7 @@ export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
   };
   const removeJar = (id: string) =>
     DELETEJar(id)
-      .then((data) => updateJars())
+      .then(() => updateJars())
       .finally(() => toast.success('Removed jar successfully.'));
 
   return (

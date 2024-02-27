@@ -169,6 +169,7 @@ export const Jars = () => {
               setDisableDialogButtons(true);
 
               const formData = new FormData(event.currentTarget);
+              // eslint-disable-next-line
               const formJson = Object.fromEntries((formData as any).entries());
 
               const data: UploadJarRequest = {
@@ -182,7 +183,7 @@ export const Jars = () => {
                 const progress = p.loaded / (p.total ?? 1);
                 toast.update(id, { progress });
               })
-                .then((data) => {
+                .then(() => {
                   toast.success('Uploaded jar.');
                 })
                 .catch((error) => {
@@ -277,6 +278,7 @@ export const Jars = () => {
               setDisableDialogButtons(true);
 
               const formData = new FormData(event.currentTarget);
+              // eslint-disable-next-line
               const formJson = Object.fromEntries((formData as any).entries());
 
               const data: DownloadJarRequest = {
@@ -288,7 +290,7 @@ export const Jars = () => {
 
               const id = toast.loading('Downloading jar...');
               POSTDownloadJar(data)
-                .then((data) => {
+                .then(() => {
                   toast.update(id, {
                     render: 'Downloaded jar.',
                     type: 'success',
