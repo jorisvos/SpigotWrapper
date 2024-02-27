@@ -53,7 +53,7 @@ namespace SpigotWrapper.Services.Jars
             return await _jarRepository.Get(id);
         }
 
-        // TODO: check for Server with this Jar before deleting
+        // TODO: check for Server with this Jar before deleting and write error when it is used
         public async Task Remove(Guid id)
         {
             var jar = await _jarRepository.Get(id);

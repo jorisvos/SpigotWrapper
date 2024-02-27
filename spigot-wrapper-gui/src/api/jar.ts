@@ -1,11 +1,5 @@
 import { API } from './index';
-import {
-  DownloadJarRequest,
-  Error,
-  Jar,
-  JarKind,
-  UploadJarRequest,
-} from '../types';
+import { DownloadJarRequest, Error, Jar, UploadJarRequest } from '../types';
 import axios, { AxiosProgressEvent } from 'axios';
 
 export const GETAllJars = async (): Promise<Jar[]> =>
