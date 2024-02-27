@@ -1,17 +1,30 @@
 import React, { useEffect } from 'react';
-import { CpuUsage, RamUsage } from '../../types';
-import { CircularProgress, Grid, Link, Paper, Box } from '@mui/material';
+import { CpuUsage, RamUsage, ServerInfo } from '../../types';
+import {
+  CircularProgress,
+  Grid,
+  Link,
+  Paper,
+  Box,
+  IconButton,
+} from '@mui/material';
 import { LineChart, PieChart, ServersOverview, Title } from '../../components';
-import { GETCpuUsage, GETRamUsage } from '../../api';
+import { GETAllServerInfo, GETCpuUsage, GETRamUsage } from '../../api';
+import { Refresh } from '@mui/icons-material';
 
 export const Dashboard = () => {
   const [ramUsage, setRamUsage] = React.useState<RamUsage[]>();
   const [cpuUsage, setCpuUsage] = React.useState<CpuUsage[]>();
+  const [servers, setServers] = React.useState<ServerInfo[]>();
 
   useEffect(() => {
     if (ramUsage == undefined) setRamUsage(GETRamUsage());
     if (cpuUsage == undefined) setCpuUsage(GETCpuUsage());
+    if (servers == undefined) updateServerInfo();
   });
+
+  const updateServerInfo = () =>
+    GETAllServerInfo().then((data) => setServers(data));
 
   return (
     <Grid container spacing={3}>
@@ -55,8 +68,13 @@ export const Dashboard = () => {
       {/* Recent Servers */}
       <Grid item xs={12}>
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-          <Title>Servers</Title>
-          <ServersOverview serverCount={5} />
+          <Title>
+            Servers{' '}
+            <IconButton onClick={updateServerInfo}>
+              <Refresh />
+            </IconButton>
+          </Title>
+          <ServersOverview servers={servers} />
           <Box sx={{ mt: 3 }}>
             <Link color="primary" href="/servers">
               See all servers

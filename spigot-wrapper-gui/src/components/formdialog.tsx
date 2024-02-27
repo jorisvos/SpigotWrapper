@@ -13,6 +13,8 @@ import {
   OutlinedInput,
   Divider,
   SelectChangeEvent,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 
 interface Props {
@@ -27,14 +29,19 @@ interface Props {
   dialogComponents: DialogComponents[];
 }
 
-export interface DialogComponents {
-  type: 'select' | 'text' | 'file';
+interface SelectItems {
+  value: string;
+  label: string;
+}
+
+interface DialogComponents {
+  type: 'select' | 'text' | 'file' | 'boolean';
   name: string;
   label: string;
   required: boolean;
   value?: string;
   onValueChanged?: (event: SelectChangeEvent<string>) => void;
-  items?: string[];
+  items?: SelectItems[];
 }
 
 export const FormDialog: React.FC<Props> = ({
@@ -88,6 +95,7 @@ export const FormDialog: React.FC<Props> = ({
                     {component.label}
                   </InputLabel>
                   <Select
+                    sx={{ mb: 1 }}
                     native
                     required={component.required}
                     id={component.name}
@@ -102,8 +110,8 @@ export const FormDialog: React.FC<Props> = ({
                     }>
                     {component.items
                       ? component.items.map((item, i) => (
-                          <option key={i} value={item}>
-                            {item}
+                          <option key={i} value={item.value}>
+                            {item.label}
                           </option>
                         ))
                       : 'THERE ARE NO GIVIN ITEMS TO SELECT FROM'}
@@ -111,6 +119,7 @@ export const FormDialog: React.FC<Props> = ({
                 </>
               ) : component.type === 'text' ? (
                 <TextField
+                  sx={{ mb: 1 }}
                   required={component.required}
                   margin="dense"
                   id={component.name}
@@ -122,6 +131,7 @@ export const FormDialog: React.FC<Props> = ({
                 />
               ) : component.type === 'file' ? (
                 <TextField
+                  sx={{ mb: 1 }}
                   required={component.required}
                   margin="dense"
                   id={component.name}
@@ -130,6 +140,20 @@ export const FormDialog: React.FC<Props> = ({
                   type="file"
                   fullWidth
                   variant="standard"
+                />
+              ) : component.type === 'boolean' ? (
+                <FormControlLabel
+                  sx={{ mb: 1 }}
+                  value={true}
+                  control={
+                    <Checkbox
+                      required={component.required}
+                      id={component.name}
+                      name={component.name}
+                    />
+                  }
+                  label={component.label}
+                  labelPlacement="start"
                 />
               ) : (
                 `WRONG COMPONENT TYPE: ${component.type}`

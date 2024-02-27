@@ -67,6 +67,7 @@ export const POSTAddServer = async (
   const formData = new FormData();
   formData.append('name', data.name);
   formData.append('jarFile', data.jarFile);
+  //TODO: add enablePlugin to formData
 
   return (
     await API.post('/server', formData, {

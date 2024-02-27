@@ -1,8 +1,8 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Box, CssBaseline, Container, Toolbar } from '@mui/material';
-import { AppBar, Copyright, Drawer, ServersOverview } from '../components';
-import { Console, Dashboard, Jars } from './index';
+import { AppBar, Copyright, Drawer } from '../components';
+import { Console, Dashboard, Jars, Servers } from './index';
 
 export const Root = () => {
   const [open, setOpen] = useState(true);
@@ -43,7 +43,7 @@ export const Root = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/console" element={<Console />} />
             <Route path="/jars" element={<Jars />} />
-            <Route path="/servers" element={<ServersOverview />} />
+            <Route path="/servers" element={<Servers />} />
           </Routes>
           <Copyright />
         </Container>

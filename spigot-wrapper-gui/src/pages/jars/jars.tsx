@@ -124,11 +124,9 @@ export const Jars = () => {
           axios.isAxiosError(error) &&
           error.response &&
           isError(error.response.data)
-        ) {
+        )
           toast.error(getErrorMsg(error.response.data));
-        } else {
-          toast.error(getErrorMsg(Error.UnexpectedError));
-        }
+        else toast.error(getErrorMsg(Error.UnexpectedError));
       })
       .finally(() => {
         toast.dismiss(id);
@@ -165,7 +163,7 @@ export const Jars = () => {
 
   return (
     <Grid container spacing={3}>
-      {/* Jars table */}
+      {/* Jars Actions */}
       <Grid item xs={12}>
         <Button
           disabled={disableButtons}
@@ -218,7 +216,9 @@ export const Jars = () => {
             required: true,
             value: jarKind,
             onValueChanged: handleJarKindChange,
-            items: Object.values(JarKind),
+            items: Object.values(JarKind).map((jarKind) => {
+              return { value: jarKind, label: jarKind };
+            }),
           },
           {
             type: 'text',
@@ -256,7 +256,9 @@ export const Jars = () => {
             required: true,
             value: jarKind,
             onValueChanged: handleJarKindChange,
-            items: Object.values(JarKind),
+            items: Object.values(JarKind).map((jarKind) => {
+              return { value: jarKind, label: jarKind };
+            }),
           },
           {
             type: 'text',
