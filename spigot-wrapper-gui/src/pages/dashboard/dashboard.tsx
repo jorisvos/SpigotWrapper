@@ -1,16 +1,10 @@
 import React, { useEffect } from 'react';
 import { CpuUsage, RamUsage, ServerInfo } from '../../types';
-import {
-  CircularProgress,
-  Grid,
-  Link,
-  Paper,
-  Box,
-  IconButton,
-} from '@mui/material';
+import { CircularProgress, Grid, Paper, Box, IconButton } from '@mui/material';
 import { LineChart, PieChart, ServersOverview, Title } from '../../components';
 import { GETAllServerInfo, GETCpuUsage, GETRamUsage } from '../../api';
 import { Refresh } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 
 export const Dashboard = () => {
   const [ramUsage, setRamUsage] = React.useState<RamUsage[]>();
@@ -21,7 +15,7 @@ export const Dashboard = () => {
     if (ramUsage == undefined) setRamUsage(GETRamUsage());
     if (cpuUsage == undefined) setCpuUsage(GETCpuUsage());
     if (servers == undefined) updateServerInfo();
-  });
+  }, [servers]);
 
   const updateServerInfo = () =>
     GETAllServerInfo().then((data) => setServers(data));
@@ -76,7 +70,7 @@ export const Dashboard = () => {
           </Title>
           <ServersOverview servers={servers} />
           <Box sx={{ mt: 3 }}>
-            <Link color="primary" href="/servers">
+            <Link color="primary" to="/servers">
               See all servers
             </Link>
           </Box>

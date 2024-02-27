@@ -5,11 +5,31 @@ import API from './index';
 export const GETStartServer = async (id: string): Promise<boolean> =>
   (await API.get(`/server/${id}/start`)).data;
 
-export const GETStopServer = async (id: string): Promise<boolean> =>
-  (await API.get(`/server/${id}/stop`)).data;
+export const GETStopServer = async (
+  id: string,
+  waitForStop = false,
+): Promise<string | boolean> => {
+  if (waitForStop) {
+    return await API.get(`/server/${id}/stop`).then(() => {
+      return GETWaitForServerStop(id);
+    });
+  } else {
+    return (await API.get(`/server/${id}/stop`)).data;
+  }
+};
 
-export const GETKillServer = async (id: string): Promise<boolean> =>
-  (await API.get(`/server/${id}/kill`)).data;
+export const GETKillServer = async (
+  id: string,
+  waitForStop = false,
+): Promise<string | boolean> => {
+  if (waitForStop) {
+    return await API.get(`/server/${id}/kill`).then(() => {
+      return GETWaitForServerStop(id);
+    });
+  } else {
+    return (await API.get(`/server/${id}/kill`)).data;
+  }
+};
 
 export const GETAcceptEULA = async (id: string): Promise<boolean> =>
   (await API.get(`/server/${id}/accepteula`)).data;
@@ -21,8 +41,7 @@ export const POSTExecuteCommand = async (
   id: string,
   command: string,
 ): Promise<boolean> =>
-  (await API.post(`/server/${id}/command`, { params: { command: command } }))
-    .data;
+  (await API.post(`/server/${id}/command`, null, { params: { command } })).data;
 
 export const GETServerLog = async (id: string): Promise<string> =>
   (await API.get(`/server/${id}/log`)).data;

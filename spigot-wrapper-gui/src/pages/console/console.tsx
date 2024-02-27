@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GETSpigotWrapperLog } from '../../api';
 import { Grid, Paper } from '@mui/material';
 import { Terminal, Title } from '../../components';
 
 export const Console = () => {
   const [log, setLog] = useState<string>('Loading console...');
+  const interval = useRef<NodeJS.Timeout | null>(null);
 
   const sendCommand = (command: string) => {
-    console.log('NOT IMPLEMENTED YET! Command: '+command);
+    console.log('NOT IMPLEMENTED YET! Command: ' + command);
   };
 
-  setTimeout(() => {
+  useEffect(() => {
     GETSpigotWrapperLog().then(setLog);
-  }, 3000);
+
+    interval.current = setInterval(() => {
+      GETSpigotWrapperLog().then(setLog);
+    }, 3000);
+
+    return () => {
+      if (interval.current) clearInterval(interval.current);
+    };
+  }, []);
 
   return (
     <Grid container spacing={3}>

@@ -2,7 +2,6 @@ import React from 'react';
 import { ServerInfo } from '../types';
 import {
   CircularProgress,
-  Link,
   Table,
   TableBody,
   TableCell,
@@ -10,6 +9,7 @@ import {
   TableRow,
 } from '@mui/material';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 interface Props {
   servers?: ServerInfo[];
@@ -32,7 +32,7 @@ export const ServersOverview: React.FC<Props> = ({ servers }) => (
           {servers.map((server) => (
             <TableRow key={server.id}>
               <TableCell>
-                <Link color="primary" href={`/server/${server.id}`}>
+                <Link color="primary" to={`/server/${server.id}`}>
                   {server.name}
                 </Link>
               </TableCell>

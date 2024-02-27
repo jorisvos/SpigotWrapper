@@ -36,7 +36,7 @@ export const Servers = () => {
 
   useEffect(() => {
     if (servers == undefined) updateServerInfo();
-  });
+  }, [servers]);
 
   const updateJars = () => GETAllJars().then((data) => setJars(data));
   const updateServerInfo = () =>
@@ -62,7 +62,6 @@ export const Servers = () => {
       jarFile: json.jarFile,
       enablePlugins: json.enablePlugins,
     };
-    console.log(data);
 
     const id = toast.loading('Creating server...');
     POSTAddServer(data)
@@ -97,11 +96,15 @@ export const Servers = () => {
       error: 'Something went wrong while killing all servers.',
     });
   const handleWaitForAllServers = () =>
-    toast.promise(GETWaitForServersToStop, {
-      pending: 'Waiting for all servers to stop...',
-      success: 'All servers are stopped.',
-      error: 'Something went wrong while waiting for all servers to stop.',
-    });
+    toast.promise(
+      GETWaitForServersToStop,
+      {
+        pending: 'Waiting for all servers to stop...',
+        success: 'All servers are stopped.',
+        error: 'Something went wrong while waiting for all servers to stop.',
+      },
+      { closeButton: true, onClick: () => toast.dismiss(this) },
+    );
 
   return (
     <Grid container spacing={3}>
@@ -125,6 +128,7 @@ export const Servers = () => {
           disabled={disableButtons}
           sx={{ mr: 1, mb: 1 }}
           variant="outlined"
+          color="error"
           onClick={handleKillAllServers}>
           Kill all servers
         </Button>
