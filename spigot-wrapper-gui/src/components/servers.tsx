@@ -49,7 +49,7 @@ export const Servers: React.FC<Props> = ({ serverCount }) => {
                 <TableCell>
                   {moment(server.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                 </TableCell>
-                <TableCell>{server.isRunning.toString()}</TableCell>
+                <TableCell>{server.isRunning ? 'Running' : 'Stopped'}</TableCell>
                 <TableCell align="right">{server.id}</TableCell>
               </TableRow>
             ))}
