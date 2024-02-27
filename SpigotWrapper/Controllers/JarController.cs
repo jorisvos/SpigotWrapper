@@ -40,9 +40,7 @@ namespace SpigotWrapper.Controllers
         {
             try
             {
-                Console.WriteLine("test1");
                 var uploadedJar = await _jarService.Add(jar, jar.File);
-                Console.WriteLine("test2");
 
                 return CreatedAtAction("GetById",
                     "Jar",
