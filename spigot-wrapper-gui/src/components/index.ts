@@ -4,10 +4,11 @@ import Drawer from './drawer';
 import LineChart from './linechart';
 import PieChart from './piechart';
 import ScrollToElement from './scrolltoelement';
-import Servers from './servers';
+import ServersOverview from './serversoverview';
 import Terminal from './terminal';
 import Title from './title';
 import Jars from './jars';
+import FormDialog from './formdialog';
 
 export {
   AppBar,
@@ -16,8 +17,9 @@ export {
   Title,
   LineChart,
   PieChart,
-  Servers,
+  ServersOverview,
   Terminal,
   ScrollToElement,
   Jars,
+  FormDialog,
 };

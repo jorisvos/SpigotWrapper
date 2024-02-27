@@ -9,25 +9,14 @@ import {
   isError,
 } from '../../types';
 import {
-  Box,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  TextField,
   Grid,
   Paper,
-  Select,
-  InputLabel,
-  OutlinedInput,
-  Divider,
   SelectChangeEvent,
   IconButton,
 } from '@mui/material';
 import { Bounce, ToastContainer, UpdateOptions, toast } from 'react-toastify';
-import { Title, Jars as JarsComp } from '../../components';
+import { Title, Jars as JarsComp, FormDialog } from '../../components';
 import {
   GETAllJars,
   POSTDownloadJar,
@@ -37,10 +26,21 @@ import {
 import axios from 'axios';
 import { Refresh } from '@mui/icons-material';
 
+const defaultToastSettings: UpdateOptions = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'light',
+  transition: Bounce,
+};
+
 export const Jars = () => {
   const [jars, setJars] = useState<Jar[]>();
   const [disableButtons, setDisableButtons] = useState(false);
-  const [disableDialogButtons, setDisableDialogButtons] = useState(false);
   const [openUpload, setOpenUpload] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
   const [jarKind, setJarKind] = useState('');
@@ -48,6 +48,8 @@ export const Jars = () => {
   useEffect(() => {
     if (jars == undefined) updateJars();
   });
+  //TODO: fix error occuring when backend is not running
+  const updateJars = () => GETAllJars().then((data) => setJars(data));
 
   const handleUploadOpen = () => {
     setDisableButtons(true);
@@ -57,7 +59,40 @@ export const Jars = () => {
     updateJars();
     setOpenUpload(false);
     setDisableButtons(false);
-    setDisableDialogButtons(false);
+  };
+  const handleUploadSubmit = (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    json: { [k: string]: any },
+    callback: () => void,
+  ) => {
+    const data: UploadJarRequest = {
+      jarKind: json.jarKind,
+      minecraftVersion: json.minecraftVersion,
+      file: json.file,
+    };
+
+    const id = toast.loading('Uploading file...');
+    POSTUploadJar(data, (p) => {
+      const progress = p.loaded / (p.total ?? 1);
+      toast.update(id, { progress });
+    })
+      .then(() => toast.success('Uploaded jar.'))
+      .catch((error) => {
+        if (
+          axios.isAxiosError(error) &&
+          error.response &&
+          isError(error.response.data)
+        )
+          toast.error(getErrorMsg(error.response.data));
+        else toast.error(getErrorMsg(Error.UnexpectedError));
+      })
+      .finally(() => {
+        toast.dismiss(id);
+        callback();
+      });
+  };
+  const handleJarKindChange = (event: SelectChangeEvent<typeof jarKind>) => {
+    setJarKind(event.target.value);
   };
 
   const handleDownloadOpen = () => {
@@ -68,27 +103,37 @@ export const Jars = () => {
     updateJars();
     setOpenDownload(false);
     setDisableButtons(false);
-    setDisableDialogButtons(false);
+  };
+  const handleDownloadSubmit = (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    json: { [k: string]: any },
+    callback: () => void,
+  ) => {
+    const data: DownloadJarRequest = {
+      downloadUrl: json.downloadUrl,
+      jarKind: json.jarKind,
+      minecraftVersion: json.minecraftVersion,
+      fileName: json.fileName,
+    };
+
+    const id = toast.loading('Downloading jar...');
+    POSTDownloadJar(data)
+      .then(() => toast.success('Downloaded jar.'))
+      .catch((error) => {
+        if (
+          axios.isAxiosError(error) &&
+          error.response &&
+          isError(error.response.data)
+        )
+          toast.error(getErrorMsg(error.response.data));
+        else toast.error(getErrorMsg(Error.UnexpectedError));
+      })
+      .finally(() => {
+        toast.dismiss(id);
+        callback();
+      });
   };
 
-  const handleJarKindChange = (event: SelectChangeEvent<typeof jarKind>) => {
-    setJarKind(event.target.value);
-  };
-
-  const defaultToastSettings: UpdateOptions = {
-    position: 'top-right',
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: 'light',
-    transition: Bounce,
-  };
-
-  //TODO: fix error occuring when backend is not running
-  const updateJars = () => GETAllJars().then((data) => setJars(data));
   const downloadLatest = () => {
     setDisableButtons(true);
     const id = toast.loading('Downloading latest version...');
@@ -118,7 +163,7 @@ export const Jars = () => {
 
   return (
     <Grid container spacing={3}>
-      {/* Jars table */}
+      {/* Jars Actions */}
       <Grid item xs={12}>
         <Button
           disabled={disableButtons}
@@ -156,239 +201,79 @@ export const Jars = () => {
         </Paper>
       </Grid>
 
-      <Box>
-        {/* Upload Dialog */}
-        <Dialog
-          open={openUpload}
-          onClose={handleUploadClose}
-          PaperProps={{
-            component: 'form',
-            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-              //TODO: add check if file is not bigger then the limit, because now it just throws an unexpected error and displays a success toast.
-              event.preventDefault();
-              setDisableDialogButtons(true);
-
-              const formData = new FormData(event.currentTarget);
-              // eslint-disable-next-line
-              const formJson = Object.fromEntries((formData as any).entries());
-
-              const data: UploadJarRequest = {
-                jarKind: formJson.jarKind,
-                minecraftVersion: formJson.minecraftVersion,
-                file: formJson.file,
-              };
-
-              const id = toast.loading('Uploading file...');
-              POSTUploadJar(data, (p) => {
-                const progress = p.loaded / (p.total ?? 1);
-                toast.update(id, { progress });
-              })
-                .then(() => {
-                  toast.success('Uploaded jar.');
-                })
-                .catch((error) => {
-                  if (
-                    axios.isAxiosError(error) &&
-                    error.response &&
-                    isError(error.response.data)
-                  ) {
-                    toast.update(id, {
-                      render: getErrorMsg(error.response.data),
-                      type: 'error',
-                      isLoading: false,
-                      ...defaultToastSettings,
-                    });
-                  } else {
-                    toast.update(id, {
-                      render: getErrorMsg(Error.UnexpectedError),
-                      type: 'error',
-                      isLoading: false,
-                      ...defaultToastSettings,
-                    });
-                  }
-                })
-                .finally(handleUploadClose);
-            },
-          }}>
-          <DialogTitle>Upload a Jar</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To upload a (custom) jar file, fill out this form. All fields
-              ending with a * are required.
-            </DialogContentText>
-
-            <Divider sx={{ mt: 1, mb: 1 }} />
-
-            <InputLabel htmlFor="jar-kind">Jar Kind *</InputLabel>
-            <Select
-              native
-              required
-              id="kind"
-              name="jarKind"
-              value={jarKind}
-              onChange={handleJarKindChange}
-              input={<OutlinedInput label="Jar Kind *" id="jar-kind" />}>
-              {Object.values(JarKind).map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </Select>
-            <TextField
-              required
-              margin="dense"
-              id="version"
-              name="minecraftVersion"
-              label="Minecraft Version (example: 1.20.2)"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-            <TextField
-              required
-              margin="dense"
-              id="file"
-              name="file"
-              label="Jar File"
-              type="file"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleUploadClose} disabled={disableDialogButtons}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={disableDialogButtons}>
-              Upload
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
-
-      <Box>
-        {/* Download Dialog */}
-        <Dialog
-          open={openDownload}
-          onClose={handleDownloadClose}
-          PaperProps={{
-            component: 'form',
-            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              setDisableDialogButtons(true);
-
-              const formData = new FormData(event.currentTarget);
-              // eslint-disable-next-line
-              const formJson = Object.fromEntries((formData as any).entries());
-
-              const data: DownloadJarRequest = {
-                downloadUrl: formJson.downloadUrl,
-                jarKind: formJson.jarKind,
-                minecraftVersion: formJson.minecraftVersion,
-                fileName: formJson.fileName,
-              };
-
-              const id = toast.loading('Downloading jar...');
-              POSTDownloadJar(data)
-                .then(() => {
-                  toast.update(id, {
-                    render: 'Downloaded jar.',
-                    type: 'success',
-                    isLoading: false,
-                    ...defaultToastSettings,
-                  });
-                })
-                .catch((error) => {
-                  if (
-                    axios.isAxiosError(error) &&
-                    error.response &&
-                    isError(error.response.data)
-                  ) {
-                    toast.update(id, {
-                      render: getErrorMsg(error.response.data),
-                      type: 'error',
-                      isLoading: false,
-                      ...defaultToastSettings,
-                    });
-                  } else {
-                    toast.update(id, {
-                      render: getErrorMsg(Error.UnexpectedError),
-                      type: 'error',
-                      isLoading: false,
-                      ...defaultToastSettings,
-                    });
-                  }
-                })
-                .finally(handleDownloadClose);
-            },
-          }}>
-          <DialogTitle>Download a Jar</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To download a (custom) jar file, fill out this form. All fields
-              ending with a * are required.
-            </DialogContentText>
-
-            <Divider sx={{ mt: 1, mb: 1 }} />
-
-            <TextField
-              required
-              margin="dense"
-              id="url"
-              name="downloadUrl"
-              label="Download Url (example: https://download.getbukkit.org/spigot/spigot-1.20.4.jar)"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-            <InputLabel htmlFor="jar-kind">Jar Kind *</InputLabel>
-            <Select
-              native
-              required
-              id="kind"
-              name="jarKind"
-              value={jarKind}
-              onChange={handleJarKindChange}
-              input={<OutlinedInput label="Jar Kind *" id="jar-kind" />}>
-              {Object.values(JarKind).map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </Select>
-            <TextField
-              required
-              margin="dense"
-              id="version"
-              name="minecraftVersion"
-              label="Minecraft Version (example: 1.20.2)"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-            <TextField
-              required
-              margin="dense"
-              id="filename"
-              name="fileName"
-              label="File Name (example: server.jar)"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={handleDownloadClose}
-              disabled={disableDialogButtons}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={disableDialogButtons}>
-              Download
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+      <FormDialog
+        open={openUpload}
+        handleClose={handleUploadClose}
+        handleSubmit={handleUploadSubmit}
+        title="Upload a Jar"
+        text="To upload a (custom) jar file, fill out this form. All fields ending with a * are required."
+        submitText="Upload"
+        dialogComponents={[
+          {
+            type: 'select',
+            name: 'jarKind',
+            label: 'Jar Kind',
+            required: true,
+            value: jarKind,
+            onValueChanged: handleJarKindChange,
+            items: Object.values(JarKind).map((jarKind) => {
+              return { value: jarKind, label: jarKind };
+            }),
+          },
+          {
+            type: 'text',
+            name: 'minecraftVersion',
+            label: 'Minecraft Version (example: 1.20.4)',
+            required: true,
+          },
+          {
+            type: 'file',
+            name: 'file',
+            label: 'Jar File',
+            required: true,
+          },
+        ]}
+      />
+      <FormDialog
+        open={openDownload}
+        handleClose={handleDownloadClose}
+        handleSubmit={handleDownloadSubmit}
+        title="Download a Jar"
+        text="To download a (custom) jar file, fill out this form. All fields ending with a * are required."
+        submitText="Download"
+        dialogComponents={[
+          {
+            type: 'text',
+            name: 'downloadUrl',
+            label:
+              'Download Url (example: https://download.getbukkit.org/spigot/spigot-1.20.4.jar)',
+            required: true,
+          },
+          {
+            type: 'select',
+            name: 'jarKind',
+            label: 'Jar Kind',
+            required: true,
+            value: jarKind,
+            onValueChanged: handleJarKindChange,
+            items: Object.values(JarKind).map((jarKind) => {
+              return { value: jarKind, label: jarKind };
+            }),
+          },
+          {
+            type: 'text',
+            name: 'minecraftVersion',
+            label: 'Minecraft Version (example: 1.20.4)',
+            required: true,
+          },
+          {
+            type: 'text',
+            name: 'fileName',
+            label: 'File Name (example: server.jar)',
+            required: true,
+          },
+        ]}
+      />
 
       <ToastContainer
         position="top-right"

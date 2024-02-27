@@ -14,5 +14,7 @@ namespace SpigotWrapper.Config
         JarAlreadyDownloaded = 0,
         JarFilenameMustBeUnique = 1,
         JarKindAndVersionMustBeUniqueTogether = 2,
+        ServerNameMustBeUnique = 3,
+        JarFileDoesNotExist = 4,
     }
 }

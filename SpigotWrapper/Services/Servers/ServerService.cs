@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using SpigotWrapper.Config;
 using SpigotWrapper.Config.Mapping;
 using SpigotWrapper.Models;
 using SpigotWrapper.Postgres;
@@ -104,14 +105,14 @@ namespace SpigotWrapper.Services.Servers
             var jars = await _jarService.GetAll();
             if (servers.Any(s => s.Name == server.Name))
             {
-                _logger.Error("The plugin name and filename must be unique.");
-                throw new Exception("The name of the server must be unique.");
+                _logger.Error("The name of the server must be unique.");
+                throw new Exception(Error.ServerNameMustBeUnique.ToString());
             }
 
             if (jars.All(j => j.Id != server.JarFile))
             {
-                _logger.Error("That jar does not exist.");
-                throw new Exception("That jar file does not exist.");
+                _logger.Error("That jar file does not exist.");
+                throw new Exception(Error.JarFileDoesNotExist.ToString());
             }
 
             var createdServer = await _serverRepository.Add(server);

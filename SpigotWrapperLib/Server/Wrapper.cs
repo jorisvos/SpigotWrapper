@@ -26,7 +26,7 @@ namespace SpigotWrapperLib.Server
         public string ServerPath { get; set; }
         [JsonIgnore]
         public string JavaExecutable { get; set; }
-        public bool IsRunning => _server is {HasExited: false};
+        public bool IsRunning => _server != null && _server is {HasExited: false};
         [JsonIgnore]
         public string LogPath => Path.Combine(ServerPath, "SpigotWrapper/logs");
         [JsonIgnore]

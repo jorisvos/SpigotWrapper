@@ -126,17 +126,21 @@ namespace SpigotWrapper.Controllers
         [HttpGet("{id:guid}/log")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public FileStreamResult Log(Guid id)
+        public ActionResult Log(Guid id)
         {
-            return new(System.IO.File.OpenRead(ServerService.ServerManager.LatestLog(id)), "application/octet-stream");
+            if (!System.IO.File.Exists(ServerService.ServerManager.LatestLog(id)))
+                return NotFound();
+            return new FileContentResult(System.IO.File.ReadAllBytes(ServerService.ServerManager.LatestLog(id)), "application/octet-stream");
         }
 
         [HttpGet("{id:guid}/minecraftlog")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public FileStreamResult MinecraftLog(Guid id)
+        public ActionResult MinecraftLog(Guid id)
         {
-            return new(System.IO.File.OpenRead(ServerService.ServerManager.LatestMinecraftLog(id)),
+            if (!System.IO.File.Exists(ServerService.ServerManager.LatestMinecraftLog(id)))
+                return NotFound();
+            return new FileContentResult(System.IO.File.ReadAllBytes(ServerService.ServerManager.LatestMinecraftLog(id)),
                 "application/octet-stream");
         }
 
@@ -217,6 +221,7 @@ namespace SpigotWrapper.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Delete(Guid id)
         {
+            //TODO: add backup system, because now it's just gone once removed
             try
             {
                 await _serverService.Remove(id);
