@@ -98,6 +98,8 @@ namespace SpigotWrapperLib.Server
             => _wrappers.FirstOrDefault(server => server.Id == id)?.WriteLine(command) ?? false;
         public string LatestMinecraftLog(Guid id)
             => _wrappers.FirstOrDefault(server => server.Id == id)?.LatestMinecraftLog;
+        public string ServerProperties(Guid id)
+            => _wrappers.FirstOrDefault(server => server.Id == id)?.ServerProperties;
         public string LatestLog(Guid id)
             => _wrappers.FirstOrDefault(server => server.Id == id)?.LatestLog;
         public bool IsRunning(Guid id)

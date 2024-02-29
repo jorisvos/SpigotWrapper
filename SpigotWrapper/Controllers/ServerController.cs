@@ -144,6 +144,27 @@ namespace SpigotWrapper.Controllers
                 "application/octet-stream");
         }
 
+        [HttpGet("{id:guid}/serverproperties")]
+        [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult ServerProperties(Guid id)
+        {
+            if (!System.IO.File.Exists(ServerService.ServerManager.ServerProperties(id)))
+                return NotFound();
+            return new FileContentResult(System.IO.File.ReadAllBytes(ServerService.ServerManager.ServerProperties(id)),
+                "application/octet-stream");
+        }
+
+        [HttpPut("{id:guid}/serverproperties")]
+        [Consumes("text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult UpdateServerProperties(Guid id, [FromBody] String properties)
+        {
+            System.IO.File.WriteAllText(ServerService.ServerManager.ServerProperties(id), properties);
+            return NoContent();
+        }
+
         [HttpGet("{id:guid}/running")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -46,6 +46,8 @@ namespace SpigotWrapper
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
             services.AddResponseCompression();
 
+            services.AddControllers(options => options.InputFormatters.Insert(options.InputFormatters.Count, new TextPlainInputFormatter()));
+
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddJsonOptions(options =>

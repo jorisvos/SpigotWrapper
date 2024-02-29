@@ -38,6 +38,7 @@ namespace SpigotWrapper.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<ActionResult> Upload([FromForm] Jar jar, ApiVersion version)
         {
+            //TODO: add a check that the file ends with the .jar extension
             try
             {
                 var uploadedJar = await _jarService.Add(jar, jar.File);
