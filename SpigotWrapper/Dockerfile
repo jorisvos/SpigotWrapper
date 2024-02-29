@@ -14,7 +14,16 @@ WORKDIR /src/SpigotWrapper
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-jammy
+# Install OpenJDK-18 (needed to run .jar)
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository ppa:openjdk-r/ppa && \
+    apt-get update && \
+    apt-get install -y openjdk-18-jre-headless && \
+    apt-get install software-properties-common && \
+    apt-get clean;
+
 WORKDIR /app
 COPY --from=build-env /src/SpigotWrapper/out .
 
