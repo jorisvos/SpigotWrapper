@@ -107,15 +107,17 @@ export const Servers = () => {
     });
   };
   const handleWaitForAllServers = () =>
-    toast.promise(
-      GETWaitForServersToStop,
-      {
-        pending: 'Waiting for all servers to stop...',
-        success: 'All servers are stopped.',
-        error: 'Something went wrong while waiting for all servers to stop.',
-      },
-      { closeButton: true, onClick: () => toast.dismiss(this) },
-    );
+    toast
+      .promise(
+        GETWaitForServersToStop,
+        {
+          pending: 'Waiting for all servers to stop...',
+          success: 'All servers are stopped.',
+          error: 'Something went wrong while waiting for all servers to stop.',
+        },
+        { closeButton: true, onClick: () => toast.dismiss(this) },
+      )
+      .then(updateServerInfo);
 
   return (
     <Grid container spacing={3}>
