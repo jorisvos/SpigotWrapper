@@ -83,18 +83,29 @@ export const Servers = () => {
   const handleJarFileChange = (event: SelectChangeEvent<typeof jarFile>) =>
     setJarFile(event.target.value);
 
-  const handleStopAllServers = () =>
+  const handleStopAllServers = () => {
+    if (!confirm('Are you sure you want to stop all servers?')) return;
     toast.promise(GETStopAllServers, {
       pending: 'Stopping all servers...',
       success: 'Stopping all servers.',
       error: 'Something went wrong while stopping all servers.',
     });
-  const handleKillAllServers = () =>
+  };
+  const handleKillAllServers = () => {
+    if (
+      !confirm(
+        'Are you sure you want to kill all servers? This might corrupt some or all servers!',
+      )
+    )
+      return;
+    if (!confirm("Are you really, really, really sure?! I won't ask again."))
+      return;
     toast.promise(GETKillAllServers, {
       pending: 'Killing all servers...',
       success: 'Killing all servers.',
       error: 'Something went wrong while killing all servers.',
     });
+  };
   const handleWaitForAllServers = () =>
     toast.promise(
       GETWaitForServersToStop,

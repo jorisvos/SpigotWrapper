@@ -49,6 +49,21 @@ export const GETServerLog = async (id: string): Promise<string> =>
 export const GETMinecraftLog = async (id: string): Promise<string> =>
   (await API.get(`/server/${id}/minecraftlog`)).data;
 
+export const GETServerProperties = async (id: string): Promise<string> =>
+  (await API.get(`/server/${id}/serverproperties`)).data;
+
+export const PUTUpdateServerProperties = async (
+  id: string,
+  properties: string,
+): Promise<string> =>
+  (
+    await API.put(`/server/${id}/serverproperties`, properties, {
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    })
+  ).data;
+
 export const GETIsServerRunning = async (id: string): Promise<boolean> =>
   (await API.get(`/server/${id}/running`)).data;
 
