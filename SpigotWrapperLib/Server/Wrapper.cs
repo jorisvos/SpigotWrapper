@@ -36,6 +36,8 @@ namespace SpigotWrapperLib.Server
         [JsonIgnore]
         public string LatestMinecraftLog => Path.Combine(MinecraftLogPath, "latest.log");
         [JsonIgnore]
+        public string ServerProperties => Path.Combine(ServerPath, "server.properties");
+        [JsonIgnore]
         public string JarFilePath { get; set; }
         #endregion
         

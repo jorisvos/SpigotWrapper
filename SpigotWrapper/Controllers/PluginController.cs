@@ -35,6 +35,7 @@ namespace SpigotWrapper.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Upload([FromForm] Plugin plugin, ApiVersion version)
         {
+            //TODO: add check that checks if the uploaded file has the .dll??? extension
             try
             {
                 var uploadedPlugin = await _pluginService.Add(plugin, plugin.File);
