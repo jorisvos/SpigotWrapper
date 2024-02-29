@@ -1,6 +1,6 @@
-# SpigotWrapper
+# SpigotWrapper (Work-in-progress)
 
-SpigotWrapper is a Minecraft server wrapper written in C# that exposes a RESTful API to add, start and control your Minecraft servers. It also allows to user (or any other person) to create 'Plugins' for the servers written in C# (example plugins will follow).
+SpigotWrapper (is not finished yet!!!) is a Minecraft server wrapper written in C# that exposes a RESTful API to add, start and control your Minecraft servers. It also allows to user (or any other person) to create 'Plugins' for the servers written in C# (example plugins will follow).
 Plugins can be added regardless of the Minecraft version.
 
 # License
