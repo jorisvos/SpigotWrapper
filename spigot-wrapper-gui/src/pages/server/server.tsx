@@ -11,6 +11,7 @@ import {
   Paper,
   Select,
   SelectChangeEvent,
+  TextField,
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -20,9 +21,11 @@ import {
   GETMinecraftLog,
   GETServerInfo,
   GETServerLog,
+  GETServerProperties,
   GETStartServer,
   GETStopServer,
   POSTExecuteCommand,
+  PUTUpdateServerProperties,
 } from '../../api';
 import { Terminal } from '../../components';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
@@ -34,14 +37,22 @@ export const Server = () => {
   const [log, setLog] = useState<string>('Loading console...');
   const [lock, setLock] = useState(false);
   const [logType, setLogType] = useState('spigotwrapper');
+  const [serverProperties, setServerProperties] = useState(
+    'Loading server properties...',
+  );
   const [enableAutoScroll, setEnableAutoScroll] = useState(false);
 
   const [startButtonDisabled, setStartButtonDisabled] = useState(true);
   const [stopButtonDisabled, setStopButtonDisabled] = useState(true);
+  const [
+    saveServerPropertiesButtonDisabled,
+    setSaveServerPropertiesButtonDisabled,
+  ] = useState(true);
 
   useEffect(() => {
     updateServerLog();
     updateServerInfo();
+    updateServerProperties();
 
     interval.current = setInterval(() => {
       updateServerLog();
@@ -72,6 +83,19 @@ export const Server = () => {
           .catch(() => setLog('No Minecraft log found.'));
     }
   };
+  const updateServerProperties = () => {
+    if (serverId !== undefined) {
+      GETServerProperties(serverId)
+        .then((data) => {
+          setSaveServerPropertiesButtonDisabled(false);
+          setServerProperties(data);
+        })
+        .catch(() => {
+          setSaveServerPropertiesButtonDisabled(true);
+          setServerProperties('No server.properties file found.');
+        });
+    }
+  };
 
   const updateServerStatus = (isRunning: boolean) => {
     if (!lock) {
@@ -96,11 +120,13 @@ export const Server = () => {
   const handleStartServer = () => {
     if (serverId !== undefined) {
       setStartButtonDisabled(true);
-      toast.promise(GETStartServer(serverId), {
-        pending: 'Starting server...',
-        success: 'Starting server.',
-        error: 'Something went wrong whilst starting the server.',
-      });
+      toast
+        .promise(GETStartServer(serverId), {
+          pending: 'Starting server...',
+          success: 'Starting server.',
+          error: 'Something went wrong whilst starting the server.',
+        })
+        .then(() => setLogType('minecraft'));
     }
   };
   const handleStopServer = () => {
@@ -113,6 +139,7 @@ export const Server = () => {
           success: 'Stopped server.',
           error: 'Something went wrong whilst stopping the server.',
         })
+        .then(() => setLogType('spigotwrapper'))
         .finally(() => setLock(false));
     }
   };
@@ -176,16 +203,33 @@ export const Server = () => {
         .finally(() => setTimeout(() => navigate('/servers'), 5000));
     }
   };
+  const handleSaveServerProperties = () => {
+    if (
+      !confirm(
+        'Are you sure you want to save the server.properties? You need to restart the server for it to take effect.',
+      )
+    )
+      return;
+    setSaveServerPropertiesButtonDisabled(true);
+    if (serverId !== undefined) {
+      toast
+        .promise(PUTUpdateServerProperties(serverId, serverProperties), {
+          pending: 'Saving server properties...',
+          success: 'Saved server properties.',
+          error: 'Something went wrong whilst saving the server properties.',
+        })
+        .finally(() => setSaveServerPropertiesButtonDisabled(false));
+    }
+  };
 
   const onLogTypeChange = (event: SelectChangeEvent<string>) => {
     setLogType(event.target.value);
     updateServerLog();
   };
-  const handleEnableAutoScrollChange = (
-    event: ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleEnableAutoScrollChange = (event: ChangeEvent<HTMLInputElement>) =>
     setEnableAutoScroll(event.target.checked);
-  };
+  const onServerPropertiesChange = (event: ChangeEvent<HTMLInputElement>) =>
+    setServerProperties(event.target.value);
 
   return (
     <Grid container spacing={3}>
@@ -236,7 +280,7 @@ export const Server = () => {
           </Button>
         </Paper>
       </Grid>
-      {/* Comming soon */}
+      {/* Server properties */}
       <Grid item xs={12} md={8} lg={9}>
         <Paper
           sx={{
@@ -245,7 +289,34 @@ export const Server = () => {
             flexDirection: 'column',
             height: 240,
           }}>
-          Comming soon
+          {/* TODO: Make this so you can use checkboxes for true/false, number for numbers and text for other */}
+          <Box sx={{ overflowY: 'scroll' }}>
+            <TextField
+              disabled={saveServerPropertiesButtonDisabled}
+              sx={{
+                fontSize: 13,
+                lineHeight: 1.42857143,
+                wordBreak: 'break-all',
+                wordWrap: 'break-word',
+                fontFamily: 'Menlo,Monaco,Consolas,"Courier New",monospace',
+              }}
+              margin="dense"
+              label="Server properties"
+              placeholder="Server properties"
+              value={serverProperties}
+              onChange={onServerPropertiesChange}
+              multiline
+              fullWidth
+            />
+          </Box>
+          {/* TODO: add cancel button (and discard changes) */}
+          <Button
+            disabled={saveServerPropertiesButtonDisabled}
+            sx={{ mt: 1 }}
+            variant="outlined"
+            onClick={handleSaveServerProperties}>
+            Save
+          </Button>
         </Paper>
       </Grid>
       {/* Console */}

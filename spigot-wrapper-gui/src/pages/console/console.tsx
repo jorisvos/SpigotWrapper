@@ -27,6 +27,7 @@ export const Console = () => {
     <Grid container spacing={3}>
       <Grid item xs={12} md={12} lg={12}>
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+          {/* TODO: add Select to select console output for a running server */}
           <Title>SpigotWrapper Console</Title>
           <Terminal log={log} sendCommand={sendCommand} />
         </Paper>

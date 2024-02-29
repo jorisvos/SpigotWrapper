@@ -35,6 +35,8 @@ import {
   GETWaitForServersToStop,
   POSTAddServer,
   POSTExecuteCommand,
+  GETServerProperties,
+  PUTUpdateServerProperties,
 } from './server';
 import {
   DELETESetting,
@@ -65,6 +67,8 @@ export {
   GETWaitForServersToStop,
   GETAcceptEULA,
   POSTAddServer,
+  GETServerProperties,
+  PUTUpdateServerProperties,
   POSTExecuteCommand,
   GETAllServerInfo,
   GETSpigotWrapperLog,
