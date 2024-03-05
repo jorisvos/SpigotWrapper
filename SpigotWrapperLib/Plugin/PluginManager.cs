@@ -3,71 +3,82 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using SpigotWrapperLib.Server;
 
 namespace SpigotWrapperLib.Plugin
 {
     public class PluginManager
     {
-        public List<ISpigotWrapperPlugin> Plugins { get; }
+        public List<ISpigotWrapperPlugin> Plugins { get; } = new();
         public static readonly string PluginPath = Path.Combine(Main.RootPath, "plugins");
 
         private readonly Wrapper _wrapper;
+        private AssemblyLoadContext _pluginLoadContext;
         
         public PluginManager(Wrapper wrapper, string[] enabledPlugins)
         {
             _wrapper = wrapper;
-            Plugins = new List<ISpigotWrapperPlugin>();
-
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
+            
+            _pluginLoadContext = new AssemblyLoadContext(PluginPath, true);
+            _pluginLoadContext.Resolving += AssemblyResolve;
 
             var pluginFiles = Directory.GetFiles(PluginPath, "*.dll");
             if (pluginFiles.Length > 0)
             {
-                _wrapper.Log("Loading plugins...\n");
+                Log("Loading plugins...");
                 foreach (var file in pluginFiles)
                 {
                     if (!enabledPlugins.Contains(Path.GetFileNameWithoutExtension(file)))
                         continue;
-                    _wrapper.Log($"Loading plugin: {Path.GetFileName(file)}");
-                    LoadPlugins(file);
+                    Log($"Loading plugin: {Path.GetFileName(file)}");
+                    LoadPlugin(file);
                 }
-                _wrapper.Log("", true, false);
-                _wrapper.Log("Finished loading plugins!");
+                Log("Finished loading plugins!");
             }
             else
-                _wrapper.Log("No plugins found!");
-            _wrapper.Log($"{Plugins.Count} plugins loaded\n");
+                Log("No plugins found!");
+            Log($"{Plugins.Count} plugins loaded");
         }
 
-        public void UnloadPlugin(string name) 
-            => Plugins.Remove(Plugins.First(plugin => plugin.Name == name));
+        public void UnloadPlugins()
+        {
+            foreach (var plugin in Plugins)
+                plugin.UnloadPlugin();
+            Plugins.Clear();
+            _pluginLoadContext.Unload();
+            _pluginLoadContext = null;
+        }
 
-        private void LoadPlugins(string file)
+        private void LoadPlugin(string file)
         {
             try
             {
-                var assembly = Assembly.LoadFrom(file);
+                var assembly = _pluginLoadContext.LoadFromAssemblyPath(file);
                 foreach (var type in assembly.GetTypes())
                 {
                     if (!typeof(ISpigotWrapperPlugin).IsAssignableFrom(type))
                         continue;
-                    
-                    var plugin = (ISpigotWrapperPlugin) Activator.CreateInstance(type, _wrapper);
+                    var plugin = Activator.CreateInstance(type, _wrapper) as ISpigotWrapperPlugin;
                     Plugins.Add(plugin);
                 }
             }
             catch (Exception e)
             {
-                _wrapper.Log(
-                    $"\n/!\\ Could not load Plugin: {Path.GetFileName(file)}\n{e.GetType()}\nError: {e.Message}\nStacktrace: {e.StackTrace}\n");
+                Log(
+                    $"\n/!\\ Could not load Plugin: {Path.GetFileName(file)}\n{e.GetType()}\nFile: {file}\nError: {e.Message}\nStacktrace: {e.StackTrace}\n");
                 if(e.InnerException != null)
-                    _wrapper.Log(
+                    Log(
                         $"InnerException: {e.InnerException.GetType()}\nMessage: {e.InnerException.Message}\nStacktrace: {e.InnerException.StackTrace}\n");
             }
         }
 
-        private static Assembly AssemblyResolve(object sender, ResolveEventArgs e) 
-            => File.Exists(Path.Combine(PluginPath, "libs/" + new AssemblyName(e.Name!).Name + ".dll")) ? Assembly.LoadFile(Path.Combine(PluginPath, "libs/" + new AssemblyName(e.Name!).Name + ".dll")) : null;
+        private void Log(string msg)
+            => _wrapper.Log($"[PluginManager] {msg}");
+
+        private Assembly AssemblyResolve(AssemblyLoadContext context, AssemblyName assemblyName)
+            => File.Exists(Path.Combine(PluginPath, $"libs/{assemblyName.Name}.dll")) 
+                ? _pluginLoadContext.LoadFromAssemblyPath(Path.Combine(PluginPath, $"libs/{assemblyName.Name}.dll")) 
+                : null;
     }
 }

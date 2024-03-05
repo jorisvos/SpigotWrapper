@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SpigotWrapperLib.Log
 {
-    public class Backup
+    public static class Backup
     {
         private static bool _backedUpLogs;
         

@@ -62,7 +62,7 @@ namespace SpigotWrapper.Services.Servers
                 var javaExecutable = spigotWrapperRepository!.Get("JavaExecutable").GetAwaiter().GetResult().Value;
                 foreach (var server in servers!)
                 {
-                    EnrichWithEnabledPlugins(server, pluginRepository, pluginServerRepository).GetAwaiter();
+                    EnrichWithEnabledPlugins(server, pluginRepository, pluginServerRepository).GetAwaiter().GetResult();
                     var libServer = mapper!.Map<Server, Wrapper>(server);
                     libServer.ServerPath = Path.Combine(ServerPath, libServer.Id.ToString());
                     libServer.JavaExecutable = javaExecutable;
@@ -184,7 +184,7 @@ namespace SpigotWrapper.Services.Servers
                 var plugins = new List<Plugin>();
                 foreach (var pluginServer in pluginsServer)
                     plugins.Add(await pluginRepository.Get(pluginServer.PluginId));
-                server.EnabledPlugins = plugins.ToArray();
+                server.EnabledPlugins = plugins.Count > 0 ? plugins.ToArray() : Array.Empty<Plugin>();
             }
         }
 
