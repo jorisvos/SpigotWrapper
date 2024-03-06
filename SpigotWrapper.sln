@@ -1,13 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+#
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpigotWrapperLib", "SpigotWrapperLib\SpigotWrapperLib.csproj", "{A15F0377-E75C-48DD-B402-E32A5BE87684}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{78C16A29-771D-40F1-899F-F44D87B5591A}"
-ProjectSection(SolutionItems) = preProject
-	DbCreationScript.sql = data\DbCreationScript.sql
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		data\DbCreationScript.sql = data\DbCreationScript.sql
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpigotWrapper", "SpigotWrapper\SpigotWrapper.csproj", "{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{FB3B4F1A-C29A-4A0D-8331-64D20E0D2E84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavascriptConnector", "plugins\JavascriptConnector\JavascriptConnector.csproj", "{F742DD8E-B22F-4FF8-93AC-FD12FCF73DA6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{8EACDD44-02AF-4910-97FA-4AD28030E22A}"
+	ProjectSection(SolutionItems) = preProject
+		examples\advancedJavascript.js = examples\advancedJavascript.js
+		examples\basicJavascript.js = examples\basicJavascript.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,5 +36,15 @@ Global
 		{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC9FB91B-1DF6-4D78-97A2-D66AE1AEC4FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F742DD8E-B22F-4FF8-93AC-FD12FCF73DA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F742DD8E-B22F-4FF8-93AC-FD12FCF73DA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F742DD8E-B22F-4FF8-93AC-FD12FCF73DA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F742DD8E-B22F-4FF8-93AC-FD12FCF73DA6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F742DD8E-B22F-4FF8-93AC-FD12FCF73DA6} = {FB3B4F1A-C29A-4A0D-8331-64D20E0D2E84}
 	EndGlobalSection
 EndGlobal
