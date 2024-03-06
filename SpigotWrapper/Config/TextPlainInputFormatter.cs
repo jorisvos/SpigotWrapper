@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace SpigotWrapper;
+namespace SpigotWrapper.Config;
 
 public class TextPlainInputFormatter : InputFormatter
 {
@@ -27,6 +26,6 @@ public class TextPlainInputFormatter : InputFormatter
   public override bool CanRead(InputFormatterContext context)
   {
       var contentType = context.HttpContext.Request.ContentType;
-      return contentType.StartsWith(ContentType);
+      return contentType != null && contentType.StartsWith(ContentType);
   }
 }

@@ -27,7 +27,7 @@ namespace SpigotWrapperLib.API
         public string GetConfig(string name)
         {
             var fileName = Path.Combine(_configPath, name) + ".json";
-            return !File.Exists(fileName) ? null : File.ReadAllText(fileName);
+            return !File.Exists(fileName) ? "" : File.ReadAllText(fileName);
         }
         
         public void SaveConfig<T>(T config) where T : IConfig

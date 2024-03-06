@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using SpigotWrapperLib.Events;
+using SpigotWrapperLib.Log;
 
 namespace SpigotWrapperLib.Server
 {
@@ -52,6 +53,10 @@ namespace SpigotWrapperLib.Server
                 }
                 else if (message.Contains("Teleported"))
                 {
+                    //TODO: handle following Minecraft server output: Teleported <playername> to <playername>
+                    if (!message.Contains(":"))
+                        return;
+                    
                     var toSplit = !message.StartsWith("Teleported")
                         ? message[(message.IndexOf(":", StringComparison.Ordinal) + 2)..^1]
                         : message;
@@ -68,7 +73,7 @@ namespace SpigotWrapperLib.Server
             }
             catch (ArgumentOutOfRangeException exception)
             {
-                Console.WriteLine(exception);
+                Logger.Error("MinecraftConnector", exception);
             }
         }
 
@@ -78,14 +83,14 @@ namespace SpigotWrapperLib.Server
         private void TriggerEvent<T>(EventHandler<T> eventHandler, T args) where T : EventArgs
             => eventHandler?.Invoke(this, args);
 
-        public static event EventHandler<PlayerJoinedEventArgs> PlayerJoin;
-        public static event EventHandler<PlayerLeftEventArgs> PlayerLeft;
-        public static event EventHandler<PlayerChatEventArgs> PlayerChatReceived;
-        public static event EventHandler<PlayerPositionEventArgs> PlayerPositionReceived;
+        public event EventHandler<PlayerJoinedEventArgs> PlayerJoin;
+        public event EventHandler<PlayerLeftEventArgs> PlayerLeft;
+        public event EventHandler<PlayerChatEventArgs> PlayerChatReceived;
+        public event EventHandler<PlayerPositionEventArgs> PlayerPositionReceived;
 
-        public static event EventHandler<ServerEventArgs> ServerStart;
-        public static event EventHandler<ServerEventArgs> ServerStarted;
-        public static event EventHandler<ServerEventArgs> ServerStop;
-        public static event EventHandler<ServerEventArgs> ServerStopped;
+        public event EventHandler<ServerEventArgs> ServerStart;
+        public event EventHandler<ServerEventArgs> ServerStarted;
+        public event EventHandler<ServerEventArgs> ServerStop;
+        public event EventHandler<ServerEventArgs> ServerStopped;
     }
 }

@@ -57,8 +57,10 @@ namespace SpigotWrapper.Services.Plugins
 
         public async Task Remove(Guid id)
         {
+            var plugin = await _pluginRepository.Get(id);
             await _pluginRepository.Remove(id);
-            _logger.Info($"Removed {id})");
+            File.Delete(Path.Combine(PluginPath, plugin.FileName));
+            _logger.Info($"Removed {plugin.Name}");
         }
     }
 }

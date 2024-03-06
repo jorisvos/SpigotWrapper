@@ -15,11 +15,9 @@ namespace SpigotWrapperLib.Log
         public static void Error(object className, object line) => Log($"[{DateTime.Now}] [{className}/ERROR]: {line}");
         public static void Fatal(object className, object line) => Log($"[{DateTime.Now}] [{className}/FATAL]: {line}");
 
-        private string _className;
+        private readonly string _className;
         public Logger(string className)
-        {
-            _className = className;
-        }
+            => _className = className;
 
         public void Debug(object line) => Debug(_className, line);
         public void Info(object line) => Info(_className, line);

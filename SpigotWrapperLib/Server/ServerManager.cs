@@ -75,9 +75,7 @@ namespace SpigotWrapperLib.Server
         public void WaitForStop(Guid id)
         {
             while (IsRunning(id))
-            {
                 Thread.Sleep(10);
-            }
         }
 
         public List<Wrapper> GetAllInfo(int count = -1)
@@ -102,8 +100,12 @@ namespace SpigotWrapperLib.Server
             => _wrappers.FirstOrDefault(server => server.Id == id)?.ServerProperties;
         public string LatestLog(Guid id)
             => _wrappers.FirstOrDefault(server => server.Id == id)?.LatestLog;
+
         public bool IsRunning(Guid id)
-            => _wrappers.FirstOrDefault(server => server.Id == id)?.IsRunning ?? false;
+        {
+            try { return _wrappers.FirstOrDefault(server => server.Id == id)?.IsRunning ?? false; }
+            catch { return false; }
+        }
         public void WaitForAllToStop()
             => _wrappers.ForEach(server => WaitForStop(server.Id));
     }

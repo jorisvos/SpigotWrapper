@@ -83,10 +83,10 @@ namespace SpigotWrapper.Controllers
         {
             var jar = await _jarService.DownloadJar(jarDownloadRequest.DownloadUrl, jarDownloadRequest.FileName,
                 jarDownloadRequest.JarKind, jarDownloadRequest.MinecraftVersion);
-            if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
-                return BadRequest(jar);
             if (jar == null)
                 return BadRequest();
+            if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
+                return BadRequest(jar);
             return jar;
         }
 
@@ -96,10 +96,10 @@ namespace SpigotWrapper.Controllers
         public async Task<ActionResult<dynamic>> DownloadLatest()
         {
             var jar = await _jarService.DownloadLatest();
-            if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
-                return BadRequest(jar);
             if (jar == null)
                 return BadRequest();
+            if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
+                return BadRequest(jar);
             return jar;
         }
     }

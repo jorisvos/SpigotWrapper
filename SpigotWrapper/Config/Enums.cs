@@ -16,5 +16,6 @@ namespace SpigotWrapper.Config
         JarKindAndVersionMustBeUniqueTogether = 2,
         ServerNameMustBeUnique = 3,
         JarFileDoesNotExist = 4,
+        PluginDoesNotExist = 5,
     }
 }

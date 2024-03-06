@@ -26,9 +26,13 @@ namespace SpigotWrapperLib.Server
         public string ServerPath { get; set; }
         [JsonIgnore]
         public string JavaExecutable { get; set; }
-        public bool IsRunning => _server != null && _server is {HasExited: false};
+        public bool IsRunning => _server is { HasExited: false };
         [JsonIgnore]
-        public string LogPath => Path.Combine(ServerPath, "SpigotWrapper/logs");
+        public string SpigotWrapperPath => Path.Combine(ServerPath, "SpigotWrapper");
+        [JsonIgnore]
+        public string ConfigPath => Path.Combine(SpigotWrapperPath, "configs");
+        [JsonIgnore]
+        public string LogPath => Path.Combine(SpigotWrapperPath, "logs");
         [JsonIgnore]
         public string LatestLog => Path.Combine(LogPath, "latest.log");
         [JsonIgnore]
@@ -47,8 +51,12 @@ namespace SpigotWrapperLib.Server
         
         public event EventHandler<DataReceivedEventArgs> OutputReceived;
         public PluginManager PluginManager;
+        public readonly MinecraftConnector MinecraftConnector;
         #endregion
-        
+
+        public Wrapper()
+            => MinecraftConnector = new MinecraftConnector(this);
+
         #region _server
         public bool Start()
         {
@@ -75,20 +83,21 @@ namespace SpigotWrapperLib.Server
                 },
                 EnableRaisingEvents = true
             };
-
-            var minecraftConnector = new MinecraftConnector(this);
             
             _server.OutputDataReceived += ReadMessage;
             _server.ErrorDataReceived += ReadMessage;
             _server.ErrorDataReceived += (_, args) => { if (args.Data != null) Log(args.Data); };
-            _server.Exited += (_, _) => Log("Server Stopped!");
-            _server.Exited += minecraftConnector.TriggerServerStopped;
+            _server.Exited += (_, _) => Log("Server Stopped!", addServerWrapperPrefix: true);
+            _server.Exited += MinecraftConnector.TriggerServerStopped;
 
-            Log($"Starting server with arguments: {_server.StartInfo.Arguments}");
-            Log("Starting server");
+            Log($"Starting server with arguments: {_server.StartInfo.Arguments}", addServerWrapperPrefix: true);
+            Log("Starting server", addServerWrapperPrefix: true);
             if (EnablePlugins && EnabledPlugins.Length > 0)
+            {
                 PluginManager = new PluginManager(this, EnabledPlugins.Select(plugins => plugins.Name).ToArray());
-            
+                _server.Exited += (_, _) => PluginManager.UnloadPlugins();
+            }
+
             _server.Start();
             _server.BeginOutputReadLine();
             _server.BeginErrorReadLine();
@@ -123,22 +132,25 @@ namespace SpigotWrapperLib.Server
             if (_server is not {HasExited: false})
                 return false;
             _server.StandardInput.WriteLine(line);
-            Log("Command: "+line);
+            Log($"Command: {line}", addServerWrapperPrefix: true);
             return true;
         }
         #endregion
 
         #region Utils
-        public void Log(string line, bool addToFile = true, bool addTime = true)
+        public void Log(string line, bool addToFile = true, bool addTime = true, bool addServerWrapperPrefix = false)
         {
+            if (addServerWrapperPrefix)
+                line = $"[ServerWrapper] {line}";
+            
             if (addTime)
                 line = $"[{DateTime.Now:T}] {line}";
             if (!addToFile)
                 return;
             
-            // Append to Minecraft log
+            // Append to SpigotWrapper log
             File.AppendAllLines(LatestLog, new[] {line});
-            // Append to SpigotServer log
+            // Append to Global SpigotWrapper log
             Logger.Log($"Server ({Name}): {line}");
         }
         
