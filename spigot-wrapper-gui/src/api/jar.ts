@@ -43,7 +43,7 @@ export const POSTDownloadJar = async (data: DownloadJarRequest): Promise<Jar> =>
 
 export const POSTDownloadLatestJar = async (): Promise<Jar | Error> => {
   try {
-    return (await API.post('/jar/downloadlatest')).data;
+    return (await API.post('/jar/download-latest')).data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       return error.response.data;

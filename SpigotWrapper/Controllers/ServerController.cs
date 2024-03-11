@@ -24,7 +24,7 @@ namespace SpigotWrapper.Controllers
 
         #region ServerManager operations
 
-        [HttpGet("stopall")]
+        [HttpGet("stop-all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult StopAll()
@@ -33,7 +33,7 @@ namespace SpigotWrapper.Controllers
             return NoContent();
         }
         
-        [HttpGet("killall")]
+        [HttpGet("kill-all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult KillAll()
@@ -99,7 +99,7 @@ namespace SpigotWrapper.Controllers
             return ServerService.ServerManager.KillServer(id);
         }
 
-        [HttpGet("{id:guid}/accepteula")]
+        [HttpGet("{id:guid}/accept-eula")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<bool> AcceptEula(Guid id)
@@ -133,7 +133,7 @@ namespace SpigotWrapper.Controllers
             return new FileContentResult(System.IO.File.ReadAllBytes(ServerService.ServerManager.LatestLog(id)), "application/octet-stream");
         }
 
-        [HttpGet("{id:guid}/minecraftlog")]
+        [HttpGet("{id:guid}/minecraft-log")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult MinecraftLog(Guid id)
@@ -144,7 +144,7 @@ namespace SpigotWrapper.Controllers
                 "application/octet-stream");
         }
 
-        [HttpGet("{id:guid}/serverproperties")]
+        [HttpGet("{id:guid}/server-properties")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult ServerProperties(Guid id)
@@ -155,7 +155,7 @@ namespace SpigotWrapper.Controllers
                 "application/octet-stream");
         }
 
-        [HttpPut("{id:guid}/serverproperties")]
+        [HttpPut("{id:guid}/server-properties")]
         [Consumes("text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
