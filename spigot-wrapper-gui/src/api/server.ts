@@ -32,7 +32,7 @@ export const GETKillServer = async (
 };
 
 export const GETAcceptEULA = async (id: string): Promise<boolean> =>
-  (await API.get(`/server/${id}/accepteula`)).data;
+  (await API.get(`/server/${id}/accept-eula`)).data;
 
 export const GETServerInfo = async (id: string): Promise<ServerInfo> =>
   (await API.get(`/server/${id}/info`)).data;
@@ -47,17 +47,17 @@ export const GETServerLog = async (id: string): Promise<string> =>
   (await API.get(`/server/${id}/log`)).data;
 
 export const GETMinecraftLog = async (id: string): Promise<string> =>
-  (await API.get(`/server/${id}/minecraftlog`)).data;
+  (await API.get(`/server/${id}/minecraft-log`)).data;
 
 export const GETServerProperties = async (id: string): Promise<string> =>
-  (await API.get(`/server/${id}/serverproperties`)).data;
+  (await API.get(`/server/${id}/server-properties`)).data;
 
 export const PUTUpdateServerProperties = async (
   id: string,
   properties: string,
 ): Promise<string> =>
   (
-    await API.put(`/server/${id}/serverproperties`, properties, {
+    await API.put(`/server/${id}/server-properties`, properties, {
       headers: {
         'Content-Type': 'text/plain',
       },
@@ -76,10 +76,10 @@ export const GETServerPlugins = async (id: string): Promise<string[]> =>
 
 //region Server operations (all and/or SpigotWrapper)
 export const GETStopAllServers = async (): Promise<string> =>
-  (await API.get('/server/stopall')).statusText;
+  (await API.get('/server/stop-all')).statusText;
 
 export const GETKillAllServers = async (): Promise<string> =>
-  (await API.get('/server/killall')).statusText;
+  (await API.get('/server/kill-all')).statusText;
 
 export const GETWaitForServersToStop = async (): Promise<string> =>
   (await API.get('/server/wait')).statusText;
