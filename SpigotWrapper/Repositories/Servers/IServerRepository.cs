@@ -10,6 +10,7 @@ namespace SpigotWrapper.Repositories.Servers
         Task<IEnumerable<Server>> All();
         Task<Server> Add(Server server);
         Task<Server> Get(Guid id);
+        Task<Server> Update(Server server);
         Task Remove(Guid id);
     }
 }

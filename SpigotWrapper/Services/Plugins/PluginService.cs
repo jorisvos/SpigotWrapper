@@ -23,12 +23,12 @@ namespace SpigotWrapper.Services.Plugins
             _logger = new Logger(GetType().Name);
         }
 
-        public async Task<IEnumerable<Plugin>> GetAll()
+        public async Task<IEnumerable<PluginModel>> GetAll()
         {
             return await _pluginRepository.All();
         }
 
-        public async Task<Plugin> Add(Plugin plugin, IFormFile file)
+        public async Task<PluginModel> Add(PluginModel plugin, IFormFile file)
         {
             plugin.FileName = file.FileName;
 
@@ -50,7 +50,7 @@ namespace SpigotWrapper.Services.Plugins
             return uploadedPlugin;
         }
 
-        public async Task<Plugin> Get(Guid id)
+        public async Task<PluginModel> Get(Guid id)
         {
             return await _pluginRepository.Get(id);
         }

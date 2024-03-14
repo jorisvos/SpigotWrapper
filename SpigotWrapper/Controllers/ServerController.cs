@@ -183,12 +183,28 @@ namespace SpigotWrapper.Controllers
         }
 
         [HttpGet("{id:guid}/plugins")]
-        [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<PluginModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<string[]> Plugins(Guid id)
-        {
-            return ServerService.ServerManager.GetPlugins(id);
-        }
+            => ServerService.ServerManager.GetPlugins(id);
+        
+        [HttpPost("{id:guid}/add-plugin/{pluginId:guid}")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async  Task<ActionResult<bool>> AddPlugin(Guid id, Guid pluginId)
+            => await _serverService.AddPlugin(id, pluginId);
+        
+        [HttpDelete("{id:guid}/remove-plugin/{pluginId:guid}")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async  Task<ActionResult<bool>> RemovePlugin(Guid id, Guid pluginId)
+            => await _serverService.RemovePlugin(id, pluginId);
+
+        [HttpPut("{id:guid}/enable-plugins/{enablePlugins:bool}")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Server>> EnablePlugins(Guid id, bool enablePlugins)
+            => await _serverService.EnablePlugins(id, enablePlugins);
 
         #endregion
 

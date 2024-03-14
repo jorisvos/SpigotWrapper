@@ -15,7 +15,7 @@ namespace SpigotWrapper.Models
 
         [Required] public bool EnablePlugins { get; set; }
 
-        public Plugin[] EnabledPlugins { get; set; }
+        public PluginModel[] EnabledPlugins { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
     }

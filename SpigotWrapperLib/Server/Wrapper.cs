@@ -91,7 +91,6 @@ namespace SpigotWrapperLib.Server
             _server.Exited += MinecraftConnector.TriggerServerStopped;
 
             Log($"Starting server with arguments: {_server.StartInfo.Arguments}", addServerWrapperPrefix: true);
-            Log("Starting server", addServerWrapperPrefix: true);
             if (EnablePlugins && EnabledPlugins.Length > 0)
             {
                 PluginManager = new PluginManager(this, EnabledPlugins.Select(plugins => plugins.Name).ToArray());
@@ -135,6 +134,9 @@ namespace SpigotWrapperLib.Server
             Log($"Command: {line}", addServerWrapperPrefix: true);
             return true;
         }
+
+        public void ChangeEnablePlugins(bool enablePlugins)
+            => EnablePlugins = enablePlugins;
         #endregion
 
         #region Utils

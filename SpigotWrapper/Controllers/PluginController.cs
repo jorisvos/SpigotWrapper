@@ -21,11 +21,11 @@ namespace SpigotWrapper.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Plugin>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<PluginModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<Plugin>>> All()
+        public async Task<ActionResult<List<PluginModel>>> All()
         {
-            var plugins = new List<Plugin>();
+            var plugins = new List<PluginModel>();
             plugins.AddRange(await _pluginService.GetAll());
             return plugins;
         }
@@ -33,7 +33,7 @@ namespace SpigotWrapper.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Upload([FromForm] Plugin plugin, ApiVersion version)
+        public async Task<ActionResult> Upload([FromForm] PluginModel plugin, ApiVersion version)
         {
             //TODO: add check that checks if the uploaded file has the .dll??? extension
             try
@@ -52,9 +52,9 @@ namespace SpigotWrapper.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(Plugin), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PluginModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Plugin>> GetById(Guid id)
+        public async Task<ActionResult<PluginModel>> GetById(Guid id)
         {
             var plugin = await _pluginService.Get(id);
 

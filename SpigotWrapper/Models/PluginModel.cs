@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace SpigotWrapper.Models
 {
-    public class Plugin
+    public class PluginModel
     {
         public Guid Id { get; set; }
 
