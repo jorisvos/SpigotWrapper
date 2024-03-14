@@ -10,6 +10,7 @@ using SpigotWrapper.Config;
 using SpigotWrapper.Extensions;
 using SpigotWrapper.Models;
 using SpigotWrapper.Repositories.Jars;
+using SpigotWrapper.Repositories.Servers;
 using SpigotWrapperLib;
 using SpigotWrapperLib.Log;
 
@@ -19,18 +20,18 @@ namespace SpigotWrapper.Services.Jars
     {
         public static readonly string JarPath = Path.Combine(Main.RootPath, "jars");
         private readonly IJarRepository _jarRepository;
+        private readonly IServerRepository _serverRepository;
         private readonly Logger _logger;
 
-        public JarService(IJarRepository jarRepository)
+        public JarService(IJarRepository jarRepository, IServerRepository serverRepository)
         {
             _jarRepository = jarRepository;
+            _serverRepository = serverRepository;
             _logger = new Logger(GetType().Name);
         }
 
         public async Task<IEnumerable<Jar>> GetAll()
-        {
-            return await _jarRepository.All();
-        }
+            => await _jarRepository.All();
 
         public async Task<Jar> Add(Jar jar, IFormFile file)
         {
@@ -49,17 +50,21 @@ namespace SpigotWrapper.Services.Jars
         }
 
         public async Task<Jar> Get(Guid id)
-        {
-            return await _jarRepository.Get(id);
-        }
+            => await _jarRepository.Get(id);
 
         // TODO: check for Server with this Jar before deleting and write error when it is used
-        public async Task Remove(Guid id)
+        public async Task<dynamic> Remove(Guid id)
         {
+            if (!(await _serverRepository.AllByJarId(id)).IsNullOrEmpty())
+                return Error.JarInUse;
             var jar = await _jarRepository.Get(id);
+            if (jar == null)
+                return Error.JarDoesNotExist;
+            
             await _jarRepository.Remove(id);
             File.Delete(Path.Combine(JarPath, jar.FileName));
             _logger.Info($"Removed {jar.JarKind} ({jar.MinecraftVersion})");
+            return true;
         }
 
         public async Task<dynamic> DownloadLatest()

@@ -2,7 +2,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Box, CssBaseline, Container, Toolbar } from '@mui/material';
 import { AppBar, Copyright, Drawer } from '../components';
-import { Console, Dashboard, Jars, Server, Servers } from './index';
+import { Console, Dashboard, Jars, Plugins, Server, Servers } from './index';
 
 export const Root = () => {
   const [open, setOpen] = useState(true);
@@ -43,6 +43,7 @@ export const Root = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/console" element={<Console />} />
             <Route path="/jars" element={<Jars />} />
+            <Route path="/plugins" element={<Plugins />} />
             <Route path="/servers" element={<Servers />} />
             <Route path="/server/:serverId" element={<Server />} />
           </Routes>

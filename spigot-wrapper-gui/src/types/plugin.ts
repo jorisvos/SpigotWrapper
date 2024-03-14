@@ -9,5 +9,5 @@ export interface Plugin {
 export interface UploadPluginRequest {
   name: string;
   version: string;
-  file: never;
+  file: File;
 }

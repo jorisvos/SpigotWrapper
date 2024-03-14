@@ -12,5 +12,6 @@ namespace SpigotWrapper.Repositories.Servers
         Task<Server> Get(Guid id);
         Task<Server> Update(Server server);
         Task Remove(Guid id);
+        Task<IEnumerable<Server>> AllByJarId(Guid jarId);
     }
 }

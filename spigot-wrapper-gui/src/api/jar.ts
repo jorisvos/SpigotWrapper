@@ -28,7 +28,7 @@ export const POSTUploadJar = async (
 export const GETJar = async (id: string): Promise<Jar> =>
   (await API.get(`/jar/${id}`)).data;
 
-// TODO: fix return type and data that's actually returned
+// TODO: fix return type and data that's actually returned (also in case of an error)
 export const DELETEJar = async (id: string): Promise<string> =>
   (await API.delete(`/jar/${id}`)).statusText;
 

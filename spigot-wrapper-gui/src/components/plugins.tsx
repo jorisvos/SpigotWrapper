@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { DELETEJar } from '../api';
-import { Jar } from '../types';
+import { DELETEPlugin } from '../api';
+import { Plugin } from '../types';
 import {
   CircularProgress,
   Dialog,
@@ -21,11 +21,11 @@ import { Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 interface Props {
-  jars: Jar[] | undefined;
-  updateJars: () => void;
+  plugins: Plugin[] | undefined;
+  updatePlugins: () => void;
 }
 
-export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
+export const Plugins: React.FC<Props> = ({ plugins, updatePlugins }) => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
 
@@ -39,29 +39,29 @@ export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
   };
 
   const handleRemove = () => {
-    removeJar(id);
+    removePlugin(id);
     handleClose();
   };
-  const removeJar = (id: string) =>
-    DELETEJar(id)
+  const removePlugin = (id: string) =>
+    DELETEPlugin(id)
       .then(() => {
-        updateJars();
-        toast.success('Removed jar successfully.');
+        toast.success('Removed plugin successfully.');
+        updatePlugins();
       })
       .catch(() =>
         toast.error(
-          "Something went wrong whilst trying to remove a jar file. It's probably in use.",
+          "Something went wrong whilst trying to remove a plugin. It's probably in use.",
         ),
       );
 
   return (
     <>
-      {jars ? (
+      {plugins ? (
         <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
-              <TableCell>Minecraft API</TableCell>
+              <TableCell>Name</TableCell>
               <TableCell>Version</TableCell>
               <TableCell>Created at</TableCell>
               {/* <TableCell>File name</TableCell> */}
@@ -69,20 +69,20 @@ export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {jars.map((jar) => (
-              <TableRow key={jar.id}>
+            {plugins.map((plugin) => (
+              <TableRow key={plugin.id}>
                 <TableCell>
-                  <IconButton onClick={() => handleOpen(jar.id)}>
+                  <IconButton onClick={() => handleOpen(plugin.id)}>
                     <Delete />
                   </IconButton>
                 </TableCell>
-                <TableCell>{jar.jarKind}</TableCell>
-                <TableCell>{jar.minecraftVersion}</TableCell>
+                <TableCell>{plugin.name}</TableCell>
+                <TableCell>{plugin.version}</TableCell>
                 <TableCell>
-                  {moment(jar.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+                  {moment(plugin.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                 </TableCell>
                 {/* <TableCell>{jar.minecraftVersion}</TableCell> */}
-                <TableCell align="right">{jar.id}</TableCell>
+                <TableCell align="right">{plugin.id}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -97,14 +97,14 @@ export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">
-          Are you sure you want to remove this jar?
+          Are you sure you want to remove this plugin?
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {jars?.find((jar) => jar.id === id)?.jarKind}{' '}
-            {jars?.find((jar) => jar.id === id)?.minecraftVersion}
+            {plugins?.find((plugin) => plugin.id === id)?.name}{' '}
+            {plugins?.find((plugin) => plugin.id === id)?.version}
             <br />
-            file name: {jars?.find((jar) => jar.id === id)?.fileName}
+            file name: {plugins?.find((plugin) => plugin.id === id)?.fileName}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -118,4 +118,4 @@ export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
   );
 };
 
-export default Jars;
+export default Plugins;

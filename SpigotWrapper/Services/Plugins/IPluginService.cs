@@ -11,6 +11,6 @@ namespace SpigotWrapper.Services.Plugins
         Task<IEnumerable<PluginModel>> GetAll();
         Task<PluginModel> Add(PluginModel jar, IFormFile file);
         Task<PluginModel> Get(Guid id);
-        Task Remove(Guid id);
+        Task<dynamic> Remove(Guid id);
     }
 }
