@@ -3,6 +3,8 @@
 SpigotWrapper is a Minecraft server wrapper written in C# that exposes a RESTful API to add, start and control your Minecraft servers. It also allows to user (or any other person) to create 'Plugins' for the servers written in C# (example plugins will follow).
 Plugins can be added regardless of the Minecraft version.
 
+Currently this only works with servers with minecraft version 1.19 or up (because we use openjdk-18, working on a fix)
+
 # Docker Compose
 
 To build and run with docker compose run `docker-compose up -d --build` from the root of the repo.

@@ -4,8 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using SpigotWrapper.Config;
+using SpigotWrapper.Extensions;
 using SpigotWrapper.Models;
 using SpigotWrapper.Repositories.Plugins;
+using SpigotWrapper.Repositories.PluginServer;
 using SpigotWrapperLib;
 using SpigotWrapperLib.Log;
 
@@ -15,11 +18,13 @@ namespace SpigotWrapper.Services.Plugins
     {
         public static readonly string PluginPath = Path.Combine(Main.RootPath, "plugins");
         private readonly IPluginRepository _pluginRepository;
+        private readonly IPluginServerRepository _pluginServerRepository;
         private readonly Logger _logger;
 
-        public PluginService(IPluginRepository pluginRepository)
+        public PluginService(IPluginRepository pluginRepository, IPluginServerRepository pluginServerRepository)
         {
             _pluginRepository = pluginRepository;
+            _pluginServerRepository = pluginServerRepository;
             _logger = new Logger(GetType().Name);
         }
 
@@ -51,16 +56,20 @@ namespace SpigotWrapper.Services.Plugins
         }
 
         public async Task<PluginModel> Get(Guid id)
-        {
-            return await _pluginRepository.Get(id);
-        }
+            => await _pluginRepository.Get(id);
 
-        public async Task Remove(Guid id)
+        public async Task<dynamic> Remove(Guid id)
         {
+            if (!(await _pluginServerRepository.AllByPluginId(id)).IsNullOrEmpty())
+                return Error.PluginInUse;
             var plugin = await _pluginRepository.Get(id);
+            if (plugin == null)
+                return Error.PluginDoesNotExist;
+            
             await _pluginRepository.Remove(id);
             File.Delete(Path.Combine(PluginPath, plugin.FileName));
             _logger.Info($"Removed {plugin.Name}");
+            return true;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SpigotWrapper.Config;
 using SpigotWrapper.Models;
 using SpigotWrapper.Services.Plugins;
 
@@ -33,6 +34,7 @@ namespace SpigotWrapper.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [RequestSizeLimit(100_000_000)]
         public async Task<ActionResult> Upload([FromForm] PluginModel plugin, ApiVersion version)
         {
             //TODO: add check that checks if the uploaded file has the .dll??? extension
@@ -65,11 +67,12 @@ namespace SpigotWrapper.Controllers
 
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Delete(Guid id)
         {
-            await _pluginService.Remove(id);
-
+            var result = await _pluginService.Remove(id);
+            if (result == null || typeof(Error) == result.GetType() && (result == Error.PluginInUse || result == Error.PluginDoesNotExist))
+                return BadRequest(result);
             return NoContent();
         }
     }

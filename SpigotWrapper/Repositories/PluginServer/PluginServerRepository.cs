@@ -26,5 +26,16 @@ namespace SpigotWrapper.Repositories.PluginServer
 
             return Mapper.Map<IEnumerable<PluginServerDto>, IEnumerable<Models.PluginServer>>(result);
         }
+        
+        public async Task<IEnumerable<Models.PluginServer>> AllByPluginId(Guid pluginId)
+        {
+            var result = await DbConnection.QueryAsync<PluginServerDto>(@"
+                select *
+                from plugin_server
+                where plugin_id = @pluginId
+            ", new { pluginId });
+
+            return Mapper.Map<IEnumerable<PluginServerDto>, IEnumerable<Models.PluginServer>>(result);
+        }
     }
 }

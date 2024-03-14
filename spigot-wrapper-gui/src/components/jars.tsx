@@ -44,8 +44,15 @@ export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
   };
   const removeJar = (id: string) =>
     DELETEJar(id)
-      .then(() => updateJars())
-      .finally(() => toast.success('Removed jar successfully.'));
+      .then(() => {
+        updateJars();
+        toast.success('Removed jar successfully.');
+      })
+      .catch(() =>
+        toast.error(
+          "Something went wrong whilst trying to remove a jar file. It's probably in use.",
+        ),
+      );
 
   return (
     <>

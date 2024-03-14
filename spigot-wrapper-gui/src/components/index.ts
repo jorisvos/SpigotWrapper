@@ -8,6 +8,7 @@ import ServersOverview from './serversoverview';
 import Terminal from './terminal';
 import Title from './title';
 import Jars from './jars';
+import Plugins from './plugins';
 import FormDialog from './formdialog';
 
 export {
@@ -21,5 +22,6 @@ export {
   Terminal,
   ScrollToElement,
   Jars,
+  Plugins,
   FormDialog,
 };

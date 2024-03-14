@@ -11,5 +11,6 @@ namespace SpigotWrapper.Repositories.PluginServer
         Task<Models.PluginServer> Get(Guid id);
         Task Remove(Guid id);
         Task<IEnumerable<Models.PluginServer>> AllByServerId(Guid serverId);
+        Task<IEnumerable<Models.PluginServer>> AllByPluginId(Guid pluginId);
     }
 }

@@ -68,11 +68,12 @@ namespace SpigotWrapper.Controllers
 
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Delete(Guid id)
         {
-            await _jarService.Remove(id);
-
+            var result = await _jarService.Remove(id);
+            if (result == null || typeof(Error) == result.GetType() && (result == Error.JarInUse || result == Error.JarDoesNotExist))
+                return BadRequest(result);
             return NoContent();
         }
 
@@ -83,9 +84,7 @@ namespace SpigotWrapper.Controllers
         {
             var jar = await _jarService.DownloadJar(jarDownloadRequest.DownloadUrl, jarDownloadRequest.FileName,
                 jarDownloadRequest.JarKind, jarDownloadRequest.MinecraftVersion);
-            if (jar == null)
-                return BadRequest();
-            if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
+            if (jar == null || typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
                 return BadRequest(jar);
             return jar;
         }
@@ -96,9 +95,7 @@ namespace SpigotWrapper.Controllers
         public async Task<ActionResult<dynamic>> DownloadLatest()
         {
             var jar = await _jarService.DownloadLatest();
-            if (jar == null)
-                return BadRequest();
-            if (typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
+            if (jar == null || typeof(Error) == jar.GetType() && jar == Error.JarAlreadyDownloaded)
                 return BadRequest(jar);
             return jar;
         }
