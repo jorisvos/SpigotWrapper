@@ -78,6 +78,29 @@ namespace SpigotWrapperLib.Server
                 Thread.Sleep(10);
         }
 
+        public bool AddPlugin(Guid id, Plugin.Plugin plugin)
+        {
+            var wrapper = _wrappers.FirstOrDefault(server => server.Id == id);
+            if (wrapper == null) return false;
+            
+            var enabledPlugins = new List<Plugin.Plugin>(wrapper.EnabledPlugins) { plugin };
+            wrapper.EnabledPlugins = enabledPlugins.ToArray();
+            
+            return true;
+        }
+
+        public bool RemovePlugin(Guid id, Guid pluginId)
+        {
+            var wrapper = _wrappers.FirstOrDefault(server => server.Id == id);
+            if (wrapper == null) return false;
+            
+            var enabledPlugins = new List<Plugin.Plugin>(wrapper.EnabledPlugins);
+            enabledPlugins.RemoveAt(enabledPlugins.FindIndex(plugin => plugin.Id == pluginId));
+            wrapper.EnabledPlugins = enabledPlugins.ToArray();
+            
+            return true;
+        }
+
         public List<Wrapper> GetAllInfo(int count = -1)
             => _wrappers.GetRange(0, count == -1 || count > _wrappers.Count ? _wrappers.Count : count);
         public Wrapper GetInfo(Guid id)
@@ -100,7 +123,8 @@ namespace SpigotWrapperLib.Server
             => _wrappers.FirstOrDefault(server => server.Id == id)?.ServerProperties;
         public string LatestLog(Guid id)
             => _wrappers.FirstOrDefault(server => server.Id == id)?.LatestLog;
-
+        public void EnablePlugins(Guid id, bool enablePlugins)
+            => _wrappers.FirstOrDefault(server => server.Id == id)?.ChangeEnablePlugins(enablePlugins);
         public bool IsRunning(Guid id)
         {
             try { return _wrappers.FirstOrDefault(server => server.Id == id)?.IsRunning ?? false; }

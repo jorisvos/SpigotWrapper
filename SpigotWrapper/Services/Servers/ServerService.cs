@@ -17,6 +17,7 @@ using SpigotWrapper.Repositories.SpigotWrapperSettings;
 using SpigotWrapper.Services.Jars;
 using SpigotWrapperLib;
 using SpigotWrapperLib.Log;
+using SpigotWrapperLib.Plugin;
 using SpigotWrapperLib.Server;
 
 namespace SpigotWrapper.Services.Servers
@@ -146,7 +147,7 @@ namespace SpigotWrapper.Services.Servers
 
         public async Task<Server> Get(Guid id, bool enrichEnabledPlugins)
         {
-            var server = await _serverRepository.Get(id);
+            var server = await ServerExists(id);
             if (enrichEnabledPlugins)
                 await EnrichWithEnabledPlugins(server, _pluginRepository, _pluginServerRepository);
             return server;
@@ -154,13 +155,7 @@ namespace SpigotWrapper.Services.Servers
 
         public async Task Remove(Guid id)
         {
-            var server = await _serverRepository.Get(id);
-            if (server == null)
-            {
-                _logger.Error("A server with that id cannot be found.");
-                throw new Exception("A server with that id cannot be found.");
-            }
-
+            var server = await ServerExists(id);
             var serverPath = Path.Combine(ServerPath, server.Id.ToString());
 
             var deleted = ServerManager.Instance.DeleteServer(id);
@@ -175,19 +170,75 @@ namespace SpigotWrapper.Services.Servers
             _logger.Info($"Removed server: {server.Name}");
         }
 
+        public async Task<bool> AddPlugin(Guid id, Guid pluginId)
+        {
+            var server = await ServerExists(id);
+            var plugin = await _pluginRepository.Get(pluginId);
+            if (plugin == null)
+            {
+                _logger.Error("A plugin with that id cannot be found.");
+                throw new Exception("A plugin with that id cannot be found.");
+            }
+
+            if ((await _pluginServerRepository.AllByServerId(id)).FirstOrDefault(record => record.PluginId == pluginId) != null)
+                return false;
+
+            var pluginServer = new PluginServer
+            {
+                PluginId = plugin.Id,
+                ServerId = server.Id
+            };
+            var repositoryResult = await _pluginServerRepository.Add(pluginServer);
+            var wrapperResult = ServerManager.AddPlugin(id, _mapper.Map<Plugin>(plugin));
+
+            if (!wrapperResult)
+                await _pluginServerRepository.Remove(repositoryResult.Id);
+            return wrapperResult;
+        }
+        
+        public async Task<bool> RemovePlugin(Guid id, Guid pluginId)
+        {
+            var pluginServer = (await _pluginServerRepository.AllByServerId(id)).FirstOrDefault(record => record.PluginId == pluginId);
+
+            if (pluginServer == null)
+                return false;
+
+            await _pluginServerRepository.Remove(pluginServer.Id);
+            return ServerManager.RemovePlugin(id, pluginId);
+        }
+
+        public async Task<Server> EnablePlugins(Guid id, bool enablePlugins)
+        {
+            var server = await ServerExists(id);
+            server.EnablePlugins = enablePlugins;
+            
+            ServerManager.EnablePlugins(id, enablePlugins);
+            return await _serverRepository.Update(server);
+        }
+
+        private async Task<Server> ServerExists(Guid id)
+        {
+            var server = await _serverRepository.Get(id);
+            if (server != null) return server;
+            
+            _logger.Error("A server with that id cannot be found.");
+            throw new Exception("A server with that id cannot be found.");
+        }
+
+        private async Task EnrichWithEnabledPlugins(Server server)
+            => await EnrichWithEnabledPlugins(server, _pluginRepository, _pluginServerRepository);
         private static async Task EnrichWithEnabledPlugins(Server server, IPluginRepository pluginRepository,
             IPluginServerRepository pluginServerRepository)
         {
             if (server != null)
             {
                 var pluginsServer = await pluginServerRepository.AllByServerId(server.Id);
-                var plugins = new List<Plugin>();
+                var plugins = new List<PluginModel>();
                 foreach (var pluginServer in pluginsServer)
                     plugins.Add(await pluginRepository.Get(pluginServer.PluginId));
-                server.EnabledPlugins = plugins.Count > 0 ? plugins.ToArray() : Array.Empty<Plugin>();
+                server.EnabledPlugins = plugins.Count > 0 ? plugins.ToArray() : Array.Empty<PluginModel>();
             }
         }
-
         #endregion
     }
 }

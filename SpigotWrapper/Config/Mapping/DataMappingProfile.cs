@@ -11,11 +11,11 @@ namespace SpigotWrapper.Config.Mapping
             CreateMap<JarDto, Jar>();
             CreateMap<Jar, JarDto>();
 
-            CreateMap<Plugin, PluginDto>();
-            CreateMap<PluginDto, Plugin>();
+            CreateMap<PluginModel, PluginDto>();
+            CreateMap<PluginDto, PluginModel>();
 
-            CreateMap<Plugin, SpigotWrapperLib.Plugin.Plugin>();
-            CreateMap<SpigotWrapperLib.Plugin.Plugin, Plugin>();
+            CreateMap<PluginModel, SpigotWrapperLib.Plugin.Plugin>();
+            CreateMap<SpigotWrapperLib.Plugin.Plugin, PluginModel>();
 
             CreateMap<SpigotWrapperSetting, SpigotWrapperSettingDto>();
             CreateMap<SpigotWrapperSettingDto, SpigotWrapperSetting>();

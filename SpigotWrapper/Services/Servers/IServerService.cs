@@ -13,5 +13,8 @@ namespace SpigotWrapper.Services.Servers
         Task<Server> Add(Server jar);
         Task<Server> Get(Guid id, bool enrichEnabledPlugins);
         Task Remove(Guid id);
+        Task<bool> AddPlugin(Guid id, Guid pluginId);
+        Task<bool> RemovePlugin(Guid id, Guid pluginId);
+        Task<Server> EnablePlugins(Guid id, bool enablePlugins);
     }
 }

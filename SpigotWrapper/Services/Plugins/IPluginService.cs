@@ -8,9 +8,9 @@ namespace SpigotWrapper.Services.Plugins
 {
     public interface IPluginService
     {
-        Task<IEnumerable<Plugin>> GetAll();
-        Task<Plugin> Add(Plugin jar, IFormFile file);
-        Task<Plugin> Get(Guid id);
+        Task<IEnumerable<PluginModel>> GetAll();
+        Task<PluginModel> Add(PluginModel jar, IFormFile file);
+        Task<PluginModel> Get(Guid id);
         Task Remove(Guid id);
     }
 }
