@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { DELETEJar } from '../api';
-import { Jar } from '../types';
 import {
   CircularProgress,
   Dialog,
@@ -25,7 +24,7 @@ interface Props {
   updateJars: () => void;
 }
 
-export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
+export const JarsOverview: React.FC<Props> = ({ jars, updateJars }) => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
 
@@ -118,4 +117,4 @@ export const Jars: React.FC<Props> = ({ jars, updateJars }) => {
   );
 };
 
-export default Jars;
+export default JarsOverview;

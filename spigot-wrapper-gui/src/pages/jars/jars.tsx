@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  DownloadJarRequest,
-  Error,
-  Jar,
-  JarKind,
-  UploadJarRequest,
-  getErrorMsg,
-  isError,
-} from '../../types';
-import {
   Button,
   Grid,
   Paper,
@@ -16,7 +7,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { Bounce, ToastContainer, UpdateOptions, toast } from 'react-toastify';
-import { Title, Jars as JarsComp, FormDialog } from '../../components';
+import { Title, JarsOverview } from '../../components';
 import {
   GETAllJars,
   POSTDownloadJar,
@@ -25,6 +16,10 @@ import {
 } from '../../api';
 import axios from 'axios';
 import { Refresh } from '@mui/icons-material';
+import { getErrorMsg, isError } from '../../utils';
+import { FormDialog } from '../../views';
+import { JarKind } from '../../types/jarkind';
+import { SpigotWrapperError } from '../../types/error';
 
 const defaultToastSettings: UpdateOptions = {
   position: 'top-right',
@@ -84,7 +79,7 @@ export const Jars = () => {
           isError(error.response.data)
         )
           toast.error(getErrorMsg(error.response.data));
-        else toast.error(getErrorMsg(Error.UnexpectedError));
+        else toast.error(getErrorMsg(SpigotWrapperError.UnexpectedError));
       })
       .finally(() => {
         toast.dismiss(id);
@@ -126,7 +121,7 @@ export const Jars = () => {
           isError(error.response.data)
         )
           toast.error(getErrorMsg(error.response.data));
-        else toast.error(getErrorMsg(Error.UnexpectedError));
+        else toast.error(getErrorMsg(SpigotWrapperError.UnexpectedError));
       })
       .finally(() => {
         toast.dismiss(id);
@@ -167,21 +162,21 @@ export const Jars = () => {
       <Grid item xs={12}>
         <Button
           disabled={disableButtons}
-          sx={{ mr: 1 }}
+          sx={{ mr: 1, mb: 1 }}
           variant="outlined"
           onClick={handleUploadOpen}>
           Upload jar
         </Button>
         <Button
           disabled={disableButtons}
-          sx={{ mr: 1 }}
+          sx={{ mr: 1, mb: 1 }}
           variant="outlined"
           onClick={handleDownloadOpen}>
           Download jar
         </Button>
         <Button
           disabled={disableButtons}
-          sx={{ mr: 1 }}
+          sx={{ mr: 1, mb: 1 }}
           variant="outlined"
           onClick={downloadLatest}>
           Download latest official minecraft server
@@ -197,7 +192,7 @@ export const Jars = () => {
               <Refresh />
             </IconButton>
           </Title>
-          <JarsComp jars={jars} updateJars={updateJars} />
+          <JarsOverview jars={jars} updateJars={updateJars} />
         </Paper>
       </Grid>
 

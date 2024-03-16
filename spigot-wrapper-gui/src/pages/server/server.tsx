@@ -27,8 +27,9 @@ import {
   POSTExecuteCommand,
   PUTUpdateServerProperties,
 } from '../../api';
-import { Terminal } from '../../components';
+import { Terminal, Title } from '../../components';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { PluginManager } from '../../views';
 
 export const Server = () => {
   const { serverId } = useParams();
@@ -36,12 +37,13 @@ export const Server = () => {
   const interval = useRef<NodeJS.Timeout | null>(null);
   const [log, setLog] = useState<string>('Loading console...');
   const [lock, setLock] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
   const [logType, setLogType] = useState('spigotwrapper');
   const [serverProperties, setServerProperties] = useState(
     'Loading server properties...',
   );
   const [enableAutoScroll, setEnableAutoScroll] = useState(false);
-
+  const [openPluginManager, setOpenPluginManager] = useState(false);
   const [startButtonDisabled, setStartButtonDisabled] = useState(true);
   const [stopButtonDisabled, setStopButtonDisabled] = useState(true);
   const [
@@ -55,7 +57,7 @@ export const Server = () => {
     updateServerProperties();
 
     interval.current = setInterval(() => {
-      updateServerLog();
+      if (isRunning) updateServerLog();
       updateServerInfo();
     }, 3000);
 
@@ -98,6 +100,7 @@ export const Server = () => {
   };
 
   const updateServerStatus = (isRunning: boolean) => {
+    setIsRunning(isRunning);
     if (!lock) {
       if (isRunning) {
         setStartButtonDisabled(true);
@@ -233,7 +236,7 @@ export const Server = () => {
 
   return (
     <Grid container spacing={3}>
-      {/* Server Actions */}
+      {/* Server actions */}
       <Grid item xs={12} md={4} lg={3}>
         <Paper
           sx={{
@@ -242,6 +245,7 @@ export const Server = () => {
             flexDirection: 'column',
             height: 240,
           }}>
+          <Title>Server actions</Title>
           <Button
             disabled={startButtonDisabled}
             sx={{ mr: 1, mb: 1 }}
@@ -264,11 +268,30 @@ export const Server = () => {
             onClick={handleKillServer}>
             Kill server
           </Button>
+        </Paper>
+      </Grid>
+      {/* Server configuration actions */}
+      <Grid item xs={12} md={4} lg={3}>
+        <Paper
+          sx={{
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            height: 240,
+          }}>
+          <Title>Configuration actions</Title>
           <Button
             sx={{ mr: 1, mb: 1 }}
             variant="outlined"
             onClick={handleAcceptEula}>
-            Accept Minecraft EULA
+            Accept EULA
+          </Button>
+          <Button
+            sx={{ mr: 1, mb: 1 }}
+            variant="outlined"
+            onClick={() => setOpenPluginManager(true)}
+            disabled={startButtonDisabled}>
+            Manage plugins
           </Button>
           <Button
             disabled={startButtonDisabled}
@@ -281,7 +304,7 @@ export const Server = () => {
         </Paper>
       </Grid>
       {/* Server properties */}
-      <Grid item xs={12} md={8} lg={9}>
+      <Grid item xs={12} md={4} lg={6}>
         <Paper
           sx={{
             p: 2,
@@ -356,6 +379,14 @@ export const Server = () => {
           />
         </Paper>
       </Grid>
+
+      {serverId && (
+        <PluginManager
+          serverId={serverId}
+          open={openPluginManager}
+          setOpen={setOpenPluginManager}
+        />
+      )}
 
       <ToastContainer
         position="top-right"

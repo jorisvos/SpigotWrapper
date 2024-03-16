@@ -1,5 +1,3 @@
-import { CpuUsage, RamUsage } from "../types";
-
 export const GETRamUsage = (): RamUsage[] => {
   return [
     { timestamp: '00:00', amount: 500 },

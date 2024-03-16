@@ -1,4 +1,3 @@
-import { AddServerRequest, Server, ServerInfo } from '../types';
 import API from './index';
 
 //region Server operations (per server)
@@ -70,8 +69,28 @@ export const GETIsServerRunning = async (id: string): Promise<boolean> =>
 export const GETWaitForServerStop = async (id: string): Promise<string> =>
   (await API.get(`/server/${id}/wait`)).statusText;
 
-export const GETServerPlugins = async (id: string): Promise<string[]> =>
-  (await API.get(`/server/${id}/info`)).data;
+export const GETServerPlugins = async (
+  id: string,
+): Promise<SpigotWrapperPlugin[]> =>
+  (await API.get(`/server/${id}/plugins`)).data;
+
+export const POSTAddPluginToServer = async (
+  id: string,
+  pluginId: string,
+): Promise<boolean> =>
+  (await API.post(`/server/${id}/add-plugin/${pluginId}`)).data;
+
+export const DELETERemovePluginFromServer = async (
+  id: string,
+  pluginId: string,
+): Promise<boolean> =>
+  (await API.delete(`/server/${id}/remove-plugin/${pluginId}`)).data;
+
+export const PUTEnablePluginsForServer = async (
+  id: string,
+  enablePlugins: boolean,
+): Promise<boolean> =>
+  (await API.put(`/server/${id}/enable-plugins/${enablePlugins}`)).data;
 //endregion
 
 //region Server operations (all and/or SpigotWrapper)

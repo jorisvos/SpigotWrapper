@@ -64,13 +64,8 @@ namespace SpigotWrapperLib.Server
             return true;
         }
 
-        public string[] GetPlugins(Guid id)
-        {
-            var plugins = _wrappers.FirstOrDefault(server => server.Id == id)?.PluginManager?.Plugins;
-            return plugins is not {Count: > 0} 
-                ? null 
-                : plugins!.Select(plugin => plugin.Name).ToArray();
-        }
+        public Plugin.Plugin[] GetPlugins(Guid id)
+            => _wrappers.FirstOrDefault(server => server.Id == id)?.EnabledPlugins;
         
         public void WaitForStop(Guid id)
         {

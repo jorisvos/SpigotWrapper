@@ -149,7 +149,7 @@ namespace SpigotWrapper.Services.Servers
         {
             var server = await ServerExists(id);
             if (enrichEnabledPlugins)
-                await EnrichWithEnabledPlugins(server, _pluginRepository, _pluginServerRepository);
+                await EnrichWithEnabledPlugins(server);
             return server;
         }
 
