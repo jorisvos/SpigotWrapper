@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Error,
-  Plugin,
-  UploadPluginRequest,
-  getErrorMsg,
-  isError,
-} from '../../types';
 import { Button, Grid, Paper, IconButton } from '@mui/material';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
-import { Title, Plugins as PluginsComp, FormDialog } from '../../components';
+import { Title, PluginsOverview } from '../../components';
 import { GETAllPlugins, POSTUploadPlugin } from '../../api';
 import axios from 'axios';
 import { Refresh } from '@mui/icons-material';
+import { getErrorMsg, isError } from '../../utils';
+import { FormDialog } from '../../views';
+import { SpigotWrapperError } from '../../types/error';
 
 export const Plugins = () => {
-  const [plugins, setPlugins] = useState<Plugin[]>();
+  const [plugins, setPlugins] = useState<SpigotWrapperPlugin[]>();
   const [disableButtons, setDisableButtons] = useState(false);
   const [openUpload, setOpenUpload] = useState(false);
 
@@ -57,7 +53,7 @@ export const Plugins = () => {
           isError(error.response.data)
         )
           toast.error(getErrorMsg(error.response.data));
-        else toast.error(getErrorMsg(Error.UnexpectedError));
+        else toast.error(getErrorMsg(SpigotWrapperError.UnexpectedError));
       })
       .finally(() => {
         toast.dismiss(id);
@@ -71,7 +67,7 @@ export const Plugins = () => {
       <Grid item xs={12}>
         <Button
           disabled={disableButtons}
-          sx={{ mr: 1 }}
+          sx={{ mr: 1, mb: 1 }}
           variant="outlined"
           onClick={handleUploadOpen}>
           Upload plugin
@@ -87,7 +83,7 @@ export const Plugins = () => {
               <Refresh />
             </IconButton>
           </Title>
-          <PluginsComp plugins={plugins} updatePlugins={updatePlugins} />
+          <PluginsOverview plugins={plugins} updatePlugins={updatePlugins} />
         </Paper>
       </Grid>
 

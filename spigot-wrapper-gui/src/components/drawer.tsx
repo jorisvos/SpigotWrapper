@@ -39,81 +39,77 @@ const secondaryListItems = [
   { icon: <DescriptionIcon />, text: 'Year-end sale' },
 ];
 
-const StyledDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
+const StyledDrawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  '& .MuiDrawer-paper': {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: 'border-box',
+    ...(!open && {
+      overflowX: 'hidden',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.leavingScreen,
       }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
+      width: theme.spacing(7),
+      [theme.breakpoints.up('sm')]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}));
 
 interface Props {
   open: boolean;
   toggleDrawer: () => void;
 }
 
-export const Drawer: React.FC<Props> = ({ open, toggleDrawer }) => {
+export const Drawer: React.FC<Props> = ({ open, toggleDrawer }) => (
+  <StyledDrawer variant="permanent" open={open}>
+    <Toolbar
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        px: [1],
+      }}>
+      <IconButton onClick={toggleDrawer}>
+        <ChevronLeftIcon />
+      </IconButton>
+    </Toolbar>
 
-  return (
-    <StyledDrawer variant="permanent" open={open}>
-      <Toolbar
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          px: [1],
-        }}
-      >
-        <IconButton onClick={toggleDrawer}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </Toolbar>
+    <Divider />
 
-      <Divider />
+    <List component="nav">
+      {mainListItems.map((item, index) => (
+        <Link
+          to={item.link}
+          key={index}
+          style={{ color: 'inherit', textDecoration: 'inherit' }}>
+          <ListItem button>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        </Link>
+      ))}
 
-      <List component="nav">
-        {mainListItems.map((item, index) => (
-          <Link
-            to={item.link}
-            key={index}
-            style={{ color: 'inherit', textDecoration: 'inherit' }}>
-            <ListItem button>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItem>
-          </Link>
-        ))}
+      <Divider sx={{ my: 1 }} />
 
-        <Divider sx={{ my: 1 }} />
-
-        <ListSubheader inset>Configs</ListSubheader>
-        {secondaryListItems.map((item, index) => (
+      <ListSubheader inset>Configs</ListSubheader>
+      {secondaryListItems.map((item, index) => (
         <ListItem button key={index}>
           <ListItemIcon>{item.icon}</ListItemIcon>
           <ListItemText primary={item.text} />
         </ListItem>
       ))}
-      </List>
-    </StyledDrawer>
-  );
-};
+    </List>
+  </StyledDrawer>
+);
 
 export default Drawer;

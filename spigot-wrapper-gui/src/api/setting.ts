@@ -1,5 +1,4 @@
 import API from './index';
-import { SpigotWrapperSetting } from '../types/setting';
 
 export const GETAllSettings = async (): Promise<SpigotWrapperSetting[]> =>
   (await API.get('/spigotwrappersettings')).data;

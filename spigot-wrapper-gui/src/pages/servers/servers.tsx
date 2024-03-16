@@ -8,15 +8,7 @@ import {
 } from '@mui/material';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { Refresh } from '@mui/icons-material';
-import { FormDialog, ServersOverview, Title } from '../../components';
-import {
-  AddServerRequest,
-  Error,
-  Jar,
-  ServerInfo,
-  getErrorMsg,
-  isError,
-} from '../../types';
+import { ServersOverview, Title } from '../../components';
 import {
   GETAllJars,
   GETAllServerInfo,
@@ -26,6 +18,9 @@ import {
   POSTAddServer,
 } from '../../api';
 import axios from 'axios';
+import { getErrorMsg, isError } from '../../utils';
+import { FormDialog } from '../../views';
+import { SpigotWrapperError } from '../../types/error';
 
 export const Servers = () => {
   const [servers, setServers] = React.useState<ServerInfo[]>();
@@ -73,7 +68,7 @@ export const Servers = () => {
           isError(error.response.data)
         )
           toast.error(getErrorMsg(error.response.data));
-        else toast.error(getErrorMsg(Error.UnexpectedError));
+        else toast.error(getErrorMsg(SpigotWrapperError.UnexpectedError));
       })
       .finally(() => {
         toast.dismiss(id);

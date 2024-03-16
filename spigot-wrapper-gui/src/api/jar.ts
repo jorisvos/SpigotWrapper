@@ -1,5 +1,5 @@
+import { SpigotWrapperError } from '../types/error';
 import { API } from './index';
-import { DownloadJarRequest, Error, Jar, UploadJarRequest } from '../types';
 import axios, { AxiosProgressEvent } from 'axios';
 
 export const GETAllJars = async (): Promise<Jar[]> =>
@@ -41,14 +41,16 @@ export const POSTDownloadJar = async (data: DownloadJarRequest): Promise<Jar> =>
     })
   ).data;
 
-export const POSTDownloadLatestJar = async (): Promise<Jar | Error> => {
+export const POSTDownloadLatestJar = async (): Promise<
+  Jar | SpigotWrapperError
+> => {
   try {
     return (await API.post('/jar/download-latest')).data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       return error.response.data;
     } else {
-      return Error.UnexpectedError;
+      return SpigotWrapperError.UnexpectedError;
     }
   }
 };

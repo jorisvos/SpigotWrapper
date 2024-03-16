@@ -3,13 +3,11 @@ import { Copyright } from './copyright';
 import Drawer from './drawer';
 import LineChart from './linechart';
 import PieChart from './piechart';
-import ScrollToElement from './scrolltoelement';
 import ServersOverview from './serversoverview';
 import Terminal from './terminal';
 import Title from './title';
-import Jars from './jars';
-import Plugins from './plugins';
-import FormDialog from './formdialog';
+import JarsOverview from './jarsoverview';
+import PluginsOverview from './pluginsoverview';
 
 export {
   AppBar,
@@ -20,8 +18,6 @@ export {
   PieChart,
   ServersOverview,
   Terminal,
-  ScrollToElement,
-  Jars,
-  Plugins,
-  FormDialog,
+  JarsOverview,
+  PluginsOverview,
 };

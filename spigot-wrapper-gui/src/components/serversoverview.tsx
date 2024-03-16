@@ -1,5 +1,4 @@
 import React from 'react';
-import { ServerInfo } from '../types';
 import {
   CircularProgress,
   Table,

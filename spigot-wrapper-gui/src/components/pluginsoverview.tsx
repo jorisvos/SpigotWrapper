@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { DELETEPlugin } from '../api';
-import { Plugin } from '../types';
 import {
   CircularProgress,
   Dialog,
@@ -21,11 +20,14 @@ import { Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 interface Props {
-  plugins: Plugin[] | undefined;
+  plugins: SpigotWrapperPlugin[] | undefined;
   updatePlugins: () => void;
 }
 
-export const Plugins: React.FC<Props> = ({ plugins, updatePlugins }) => {
+export const PluginsOverview: React.FC<Props> = ({
+  plugins,
+  updatePlugins,
+}) => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
 
@@ -118,4 +120,4 @@ export const Plugins: React.FC<Props> = ({ plugins, updatePlugins }) => {
   );
 };
 
-export default Plugins;
+export default PluginsOverview;

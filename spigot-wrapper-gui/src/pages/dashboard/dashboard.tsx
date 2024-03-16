@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { CpuUsage, RamUsage, ServerInfo } from '../../types';
 import { CircularProgress, Grid, Paper, Box, IconButton } from '@mui/material';
 import { LineChart, PieChart, ServersOverview, Title } from '../../components';
 import { GETAllServerInfo, GETCpuUsage, GETRamUsage } from '../../api';

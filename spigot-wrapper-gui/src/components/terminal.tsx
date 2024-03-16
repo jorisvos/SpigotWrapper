@@ -1,6 +1,6 @@
 import React, { KeyboardEvent, useState } from 'react';
 import { Box, InputAdornment, TextField } from '@mui/material';
-import { ScrollToElement } from './index';
+import { ScrollToElement } from '../utils';
 
 interface Props {
   log: string;

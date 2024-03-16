@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpigotWrapper.Models;
 using SpigotWrapper.Services.Servers;
 using SpigotWrapperLib.Log;
+using SpigotWrapperLib.Plugin;
 using SpigotWrapperLib.Server;
 
 namespace SpigotWrapper.Controllers
@@ -16,10 +18,12 @@ namespace SpigotWrapper.Controllers
     public class ServerController : ControllerBase
     {
         private readonly IServerService _serverService;
+        private readonly IMapper _mapper;
 
-        public ServerController(IServerService serverService)
+        public ServerController(IServerService serverService, IMapper mapper)
         {
             _serverService = serverService ?? throw new ArgumentNullException(nameof(serverService));
+            _mapper = mapper;
         }
 
         #region ServerManager operations
@@ -183,10 +187,10 @@ namespace SpigotWrapper.Controllers
         }
 
         [HttpGet("{id:guid}/plugins")]
-        [ProducesResponseType(typeof(List<PluginModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<PluginModel[]>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<string[]> Plugins(Guid id)
-            => ServerService.ServerManager.GetPlugins(id);
+        public ActionResult<PluginModel[]> Plugins(Guid id)
+            => _mapper.Map<Plugin[], PluginModel[]>(ServerService.ServerManager.GetPlugins(id));
         
         [HttpPost("{id:guid}/add-plugin/{pluginId:guid}")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]

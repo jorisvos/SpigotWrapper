@@ -1,15 +1,14 @@
 import API from './index';
-import { Plugin, UploadPluginRequest } from '../types';
 import { AxiosProgressEvent } from 'axios';
 
-export const GETAllPlugins = async (): Promise<Plugin[]> =>
+export const GETAllPlugins = async (): Promise<SpigotWrapperPlugin[]> =>
   (await API.get('/plugin')).data;
 
 export const POSTUploadPlugin = async (
   data: UploadPluginRequest,
   onUploadProgress = (event: AxiosProgressEvent) =>
     console.log(Math.round((100 * event.loaded) / (event.total ?? 1))),
-): Promise<Plugin> => {
+): Promise<SpigotWrapperPlugin> => {
   const formData = new FormData();
   formData.append('name', data.name);
   formData.append('version', data.version);
@@ -24,7 +23,7 @@ export const POSTUploadPlugin = async (
   return response.data;
 };
 
-export const GETPlugin = async (id: string): Promise<Plugin> =>
+export const GETPlugin = async (id: string): Promise<SpigotWrapperPlugin> =>
   (await API.get(`/plugin/${id}`)).data;
 
 // TODO: fix return type and data that's actually returned (also in case of an error)
