@@ -28,6 +28,12 @@ namespace SpigotWrapper.Config.Mapping
 
             CreateMap<Server, Wrapper>();
             CreateMap<Wrapper, Server>();
+
+            CreateMap<RamUsage, RamUsageDto>();
+            CreateMap<RamUsageDto, RamUsage>();
+            
+            CreateMap<CpuUsage, CpuUsageDto>();
+            CreateMap<CpuUsageDto, CpuUsage>();
         }
     }
 }

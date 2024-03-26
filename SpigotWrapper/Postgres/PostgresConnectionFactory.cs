@@ -3,7 +3,7 @@ using Npgsql;
 
 namespace SpigotWrapper.Postgres
 {
-    public class PostgresConnectionFactory
+    public static class PostgresConnectionFactory
     {
         public static IDbConnection CreatePostgresConnection(PostgresOptions settings)
         {

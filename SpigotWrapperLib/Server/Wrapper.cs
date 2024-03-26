@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading;
 using SpigotWrapperLib.Log;
 using SpigotWrapperLib.Plugin;
 
@@ -47,6 +49,8 @@ namespace SpigotWrapperLib.Server
         
         #region Variables
         private Process _server;
+        private DateTime _lastTime;
+        private TimeSpan _lastTotalProcessorTime;
         private bool _backedUpLogs;
         
         public event EventHandler<DataReceivedEventArgs> OutputReceived;
@@ -98,9 +102,33 @@ namespace SpigotWrapperLib.Server
             }
 
             _server.Start();
+            _lastTime = DateTime.Now;
+            _lastTotalProcessorTime = _server.TotalProcessorTime;
+            
             _server.BeginOutputReadLine();
             _server.BeginErrorReadLine();
             return true;
+        }
+
+        public List<(DateTime, long, double)> _ramCpuUsage = new();
+        public (long, double) GetRamAndCpuUsage()
+        {
+            if (_server == null || _server.HasExited)
+                return (0,0);
+            _server.Refresh();
+            
+            var ramUsageMb = _server.WorkingSet64;
+            var curTime = DateTime.Now;
+            var curTotalProcessorTime = _server.TotalProcessorTime;
+            var cpuUsage = (curTotalProcessorTime.TotalMilliseconds - _lastTotalProcessorTime.TotalMilliseconds) 
+                / curTime.Subtract(_lastTime).TotalMilliseconds 
+                / Convert.ToDouble(Environment.ProcessorCount) * 100;
+
+            _lastTime = curTime;
+            _lastTotalProcessorTime = curTotalProcessorTime;
+
+            _ramCpuUsage.Add((DateTime.Now, ramUsageMb, cpuUsage));
+            return (ramUsageMb, cpuUsage);
         }
         
         public bool Stop(object sender, EventArgs e)

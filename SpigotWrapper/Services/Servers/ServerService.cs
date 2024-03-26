@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,9 +10,11 @@ using SpigotWrapper.Config;
 using SpigotWrapper.Config.Mapping;
 using SpigotWrapper.Models;
 using SpigotWrapper.Postgres;
+using SpigotWrapper.Repositories.CpuUsage;
 using SpigotWrapper.Repositories.Jars;
 using SpigotWrapper.Repositories.Plugins;
 using SpigotWrapper.Repositories.PluginServer;
+using SpigotWrapper.Repositories.RamUsage;
 using SpigotWrapper.Repositories.Servers;
 using SpigotWrapper.Repositories.SpigotWrapperSettings;
 using SpigotWrapper.Services.Jars;
@@ -25,13 +28,19 @@ namespace SpigotWrapper.Services.Servers
     public class ServerService : IServerService
     {
         public static readonly string ServerPath = Path.Combine(Main.RootPath, "servers");
+        private static bool _saveUsageThreadRunning = false;
+        private static bool _stopSaveUsageThread = false;
+        
         private readonly IJarService _jarService;
         private readonly IMapper _mapper;
+        private readonly Logger _logger;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ISpigotWrapperSettingsRepository _spigotWrapperRepository;
         private readonly IPluginRepository _pluginRepository;
         private readonly IPluginServerRepository _pluginServerRepository;
         private readonly IServerRepository _serverRepository;
-        private readonly Logger _logger;
+        private readonly IRamUsageRepository _ramUsageRepository;
+        private readonly ICpuUsageRepository _cpuUsageRepository;
 
         static ServerService()
         {
@@ -79,21 +88,67 @@ namespace SpigotWrapper.Services.Servers
             IPluginRepository pluginRepository,
             IPluginServerRepository pluginServerRepository,
             ISpigotWrapperSettingsRepository spigotWrapperRepository,
+            IRamUsageRepository ramUsageRepository,
+            ICpuUsageRepository cpuUsageRepository,
             IJarService jarService,
-            IMapper mapper)
+            IMapper mapper,
+            IServiceProvider serviceProvider)
         {
             _serverRepository = serverRepository;
             _pluginRepository = pluginRepository;
             _pluginServerRepository = pluginServerRepository;
             _spigotWrapperRepository = spigotWrapperRepository;
+            _ramUsageRepository = ramUsageRepository;
+            _cpuUsageRepository = cpuUsageRepository;
             _jarService = jarService;
             _mapper = mapper;
             _logger = new Logger(GetType().Name);
+            _serviceProvider = serviceProvider;
         }
 
         public static ServerManager ServerManager { get; }
 
         #region Database operations
+
+        public bool StartServer(Guid id)
+        {
+            if (_saveUsageThreadRunning)
+                return ServerManager.StartServer(id);
+            _saveUsageThreadRunning = true;
+            Task.Factory.StartNew(SaveUsage);
+            // new Thread(SaveUsage).Start();
+            return ServerManager.StartServer(id);
+        }
+
+        private void SaveUsage()
+        {
+            while (!_stopSaveUsageThread)
+            {
+                ServerManager.ServersUsage(AddUsage);
+                Thread.Sleep(1000);
+                if (ServerManager.IsNoServersRunning())
+                    _stopSaveUsageThread = true;
+            }
+            _stopSaveUsageThread = false;
+            _saveUsageThreadRunning = false;
+        }
+
+        private void AddUsage(Guid serverId, long ramUsage, double cpuUsage)
+        {
+            //TODO: fix (doesnt save to database, probably because it runs on a separate thread).
+            Console.WriteLine(
+                $"{DateTime.Now} {DateTime.Now.Millisecond} - RamUsage: {ramUsage} - CpuUsage: {cpuUsage}");
+            _ramUsageRepository.Add(new RamUsage
+            {
+                Value = ramUsage,
+                ServerId = serverId
+            });
+            _cpuUsageRepository.Add(new CpuUsage
+            {
+                Value = cpuUsage,
+                ServerId = serverId
+            });
+        }
 
         public async Task<IEnumerable<Server>> GetAll()
         {
@@ -215,6 +270,12 @@ namespace SpigotWrapper.Services.Servers
             ServerManager.EnablePlugins(id, enablePlugins);
             return await _serverRepository.Update(server);
         }
+
+        public async Task<IEnumerable<RamUsage>> GetRamUsage(Guid id, int count = 100)
+            => await _ramUsageRepository.Get(id, count);
+
+        public async Task<IEnumerable<CpuUsage>> GetCpuUsage(Guid id, int count = 100)
+            => await _cpuUsageRepository.Get(id, count);
 
         private async Task<Server> ServerExists(Guid id)
         {

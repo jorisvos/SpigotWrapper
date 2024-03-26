@@ -14,9 +14,11 @@ using Npgsql;
 using SpigotWrapper.Config;
 using SpigotWrapper.Config.Mapping;
 using SpigotWrapper.Postgres;
+using SpigotWrapper.Repositories.CpuUsage;
 using SpigotWrapper.Repositories.Jars;
 using SpigotWrapper.Repositories.Plugins;
 using SpigotWrapper.Repositories.PluginServer;
+using SpigotWrapper.Repositories.RamUsage;
 using SpigotWrapper.Repositories.Servers;
 using SpigotWrapper.Repositories.SpigotWrapperSettings;
 using SpigotWrapper.Services.Jars;
@@ -71,6 +73,8 @@ namespace SpigotWrapper
             services.AddTransient<IServerRepository, ServerRepository>();
             services.AddTransient<IPluginServerRepository, PluginServerRepository>();
             services.AddTransient<ISpigotWrapperSettingsRepository, SpigotWrapperSettingsRepository>();
+            services.AddTransient<IRamUsageRepository, RamUsageRepository>();
+            services.AddTransient<ICpuUsageRepository, CpuUsageRepository>();
 
             DefaultTypeMap.MatchNamesWithUnderscores = true;
 

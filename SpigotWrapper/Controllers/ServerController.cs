@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -84,7 +85,7 @@ namespace SpigotWrapper.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<bool> Start(Guid id)
         {
-            return ServerService.ServerManager.StartServer(id);
+            return _serverService.StartServer(id);
         }
 
         [HttpGet("{id:guid}/stop")]
@@ -209,6 +210,36 @@ namespace SpigotWrapper.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Server>> EnablePlugins(Guid id, bool enablePlugins)
             => await _serverService.EnablePlugins(id, enablePlugins);
+
+        [HttpGet("{id:guid}/ram-usage/{count:int}")]
+        [ProducesResponseType(typeof(List<RamUsage>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<RamUsage>>> RamUsage(Guid id, int count)
+        {
+            var ramUsage = new List<RamUsage>();
+            ramUsage.AddRange(await _serverService.GetRamUsage(id, count));
+            return ramUsage;
+        }
+
+        [HttpGet("{id:guid}/cpu-usage/{count:int}")]
+        [ProducesResponseType(typeof(List<CpuUsage>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<CpuUsage>>> CpuUsage(Guid id, int count)
+        {
+            var cpuUsage = new List<CpuUsage>();
+            cpuUsage.AddRange(await _serverService.GetCpuUsage(id, count));
+            return cpuUsage;
+        }
+        
+        [HttpGet("{id:guid}/usage")]
+        [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<string[]> Usage(Guid id)
+        {
+            var t = ServerService.ServerManager.GetUsage(id);
+            var result = t.Select(d => $"{d.Item1} - {d.Item2} - {d.Item3}");
+            return result.ToArray();
+        }
 
         #endregion
 

@@ -96,6 +96,21 @@ namespace SpigotWrapperLib.Server
             return true;
         }
 
+        public delegate void SaveUsage(Guid serverId, long ramUsage, double cpuUsage);
+        public void ServersUsage(SaveUsage saveUsage)
+        {
+            foreach (var wrapper in _wrappers.Where(w => w.IsRunning))
+            {
+                var usage = wrapper.GetRamAndCpuUsage();
+                saveUsage(wrapper.Id, usage.Item1, usage.Item2);
+            }
+        }
+        
+        public (DateTime, long, double)[] GetUsage(Guid id)
+            => _wrappers.FirstOrDefault(server => server.Id == id)?._ramCpuUsage.ToArray() ?? Array.Empty<(DateTime, long, double)>();
+
+        public bool IsNoServersRunning()
+            => !_wrappers.Any(server => server.IsRunning);
         public List<Wrapper> GetAllInfo(int count = -1)
             => _wrappers.GetRange(0, count == -1 || count > _wrappers.Count ? _wrappers.Count : count);
         public Wrapper GetInfo(Guid id)

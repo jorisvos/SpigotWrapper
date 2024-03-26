@@ -118,3 +118,27 @@ CREATE TABLE public.spigot_wrapper_setting
 
 ALTER TABLE public.spigot_wrapper_setting
     OWNER to spigotwrapper;
+
+CREATE TABLE public.ram_usage
+(
+    id          uuid                     NOT NULL DEFAULT uuid_generate_v4(),
+    created_at  timestamp with time zone NOT NULL DEFAULT now(),
+    value       integer                  NOT NULL,
+    server_id   uuid                     NOT NULL,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE public.ram_usage
+    OWNER to spigotwrapper;
+
+CREATE TABLE public.cpu_usage
+(
+    id          uuid                     NOT NULL DEFAULT uuid_generate_v4(),
+    created_at  timestamp with time zone NOT NULL DEFAULT now(),
+    value       double precision         NOT NULL,
+    server_id   uuid                     NOT NULL,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE public.cpu_usage
+    OWNER to spigotwrapper;
